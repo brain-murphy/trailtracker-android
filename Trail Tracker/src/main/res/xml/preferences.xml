@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <MultiSelectListPreference android:title="GPS Latency"
+        android:summary="How often the app should get seek another location update affects power consumption"
+        android:key="@string/key_latency"
+        android:entries="@array/power_settings">
+    </MultiSelectListPreference>
+</PreferenceScreen>

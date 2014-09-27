@@ -1,0 +1,106 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.taptools.android.trailtracker.MapInfoFragment">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dp">
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="*">
+
+            <TableRow android:gravity="center">
+                <TextView android:id="@+id/mapNameTextView"
+                    style="@style/InfoTableRowValue"
+                    android:layout_marginLeft="0dp"
+                    android:textSize="22sp"
+                    android:layout_gravity="center"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Notes"
+                    style="@style/InfoTableRow"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:id="@+id/notesTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Recorded"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/whenRecordedTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Time Elapsed"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/timeTextView_info"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Total Distance"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/totalDistanceTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Linear Distance"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/linearDistanceTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Average Speed"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/avgSpeedTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Max Speed"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/maxSpeedTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Min Altitude"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/minAltitudeTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Max Altitude"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/maxAltitudeTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Starting Altitude"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/startingAltitudeTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Ending Altitude"
+                    style="@style/InfoTableRow"/>
+                <TextView android:id="@+id/endingAltitudeTextView"
+                    style="@style/InfoTableRowValue"/>
+            </TableRow>
+            <TableRow
+                android:gravity="center"
+                android:layout_margin="5dp">
+                <Button
+                    android:id="@+id/speedGraphButton"
+                    android:text="View Speed Graph"/>
+            </TableRow>
+            <TableRow android:gravity="center"
+                android:layout_margin="5dp">
+                <Button android:id="@+id/altitudeGraphButton"
+                    android:text="View Altitude Graph"/>
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+</FrameLayout>

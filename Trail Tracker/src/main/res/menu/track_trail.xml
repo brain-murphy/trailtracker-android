@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item
+            android:id="@+id/action_add_landmark"
+            android:title="Add Landmark"
+            android:titleCondensed="Landmark"
+            android:orderInCategory="2"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_action_camera"/>
+        <item
+            android:id="@+id/action_start_tracking"
+            android:title="Start Tracking"
+            android:titleCondensed="Start"
+            android:orderInCategory="1"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_action_location_found"/>
+        <item
+            android:id="@+id/action_stop_tracking"
+            android:title="Stop Tracking"
+            android:titleCondensed="Stop"
+            android:orderInCategory="3"
+            app:showAsAction="always"
+            android:icon="@drawable/ic_action_location_off"/>
+    </group>
+</menu>

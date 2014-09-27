@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Trail Tracker</string>
+    <string name="title_section1">Track Trail</string>
+    <string name="title_section2">Trace Trail</string>
+    <string name="title_section3">Plain Map</string>
+    <string name="title_section4">Sharing</string>
+    <string name="title_section5">Results</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_error">ErrorActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
+    <color name="orange">#ff6000</color>
+    <color name="purple">#ff00FF</color>
+    <color name="cyan">#00ffff</color>
+    <color name="ghost">#55FFFFFF</color>
+
+    <string name="key_latency">GPS Update Latency</string>
+    <string name="time">Time: </string>
+    <string name="distance">Distance: </string>
+    <string name="speed">Speed: </string>
+    <string name="altitude">Altitude: </string>
+    <string name="set_map_details">Set Map Details</string>
+
+    <array name="power_settings">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </array>
+
+    <string name="title_activity_waypoint">Add Waypoint</string>
+    <string name="use_map_text">Use This Map</string>
+    <string name="title_activity_chart">ChartActivity</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+    <string name="title_activity_mapping">Maps</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_results">" delete"</string>
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <FrameLayout
+            android:id="@+id/mapFragmentWindow_results"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+        <Button
+            android:id="@+id/viewMapsButton"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:text="View Maps"
+            android:layout_gravity="end"
+            android:alpha=".75"/>
+
+    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/expandableListViewWindow"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"></FrameLayout>
+</LinearLayout>
