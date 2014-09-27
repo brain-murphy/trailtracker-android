@@ -2,6 +2,7 @@ package net.taptools.android.trailtracker;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,11 +23,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.zip.CheckedOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -36,21 +39,56 @@ import javax.xml.transform.stream.StreamResult;
 
 public class ResultsActivity extends Activity {
 
-    private ArrayList<Map> maps;
-
     public static final String KEY_MAP_IDS = "mapidskey";
 
-    private Fragment activeFragment;
+    private static final String KEY_VIEW_STATE = " viewsatae";
+    private static final int STATE_MAPPING = 0;
+    private static final int STATE_INFO = 1;
+    private static final int STATE_CHART = 2;
+    private int viewState;
 
+    private static final String TAG_MAPPING_FRAG = "mapfragtag";
+    private static final String TAG_INFO_FRAG = "taginfofrag";
+    private static final String TAG_CHART_FRAG = "tagchartFrag";
+    private static final String[] TAGS_SEQUENCED = {TAG_MAPPING_FRAG, TAG_INFO_FRAG, TAG_CHART_FRAG};
+
+    //private ResultsSubFragment activeFragment;
+
+    //private ArrayList<Map> maps;
     private FrameLayout layout;
-
-    public interface IResultsFragment {
-        public ArrayList<Map> getMapsToShare();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState.containsKey(KEY_VIEW_STATE)) {
+            viewState = savedInstanceState.getInt(KEY_VIEW_STATE, 0);
+            FragmentManager manager = getFragmentManager();
+            Stack<ResultsSubFragment> fragStack = new Stack<ResultsSubFragment>();
+            ResultsSubFragment temp = null;
+            switch (viewState) {
+                //Fallthrough behavior intentional//
+                case STATE_CHART:
+                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_CHART_FRAG)) != null) {
+                        fragStack.push(temp);
+                    }
+                case STATE_INFO:
+                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_INFO_FRAG)) != null) {
+                        fragStack.push(temp);
+                    }
+                case STATE_MAPPING:
+                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_MAPPING_FRAG)) != null) {
+                        fragStack.push(temp);
+                    }
+            }
+
+            for (int fragIndex = 0; fragIndex < fragStack.size(); fragIndex++) {
+                manager.beginTransaction()
+                        .add(fragStack.pop(), TAGS_SEQUENCED[fragIndex])
+                        .addToBackStack(TAGS_SEQUENCED[fragIndex])
+                        .commit();
+            }
+        }
 
         TTSQLiteOpenHelper helper = ((MyApplication) getApplication()).getDatabaseHelper();
         int[] mapIds = getIntent().getIntArrayExtra(KEY_MAP_IDS);
@@ -73,6 +111,31 @@ public class ResultsActivity extends Activity {
                 .commit();
     }
 
+    public void showInfoFragment(ArrayList<Map> maps) {
+        assert maps.size() == 1;
+        activeFragment = MapInfoFragment.newInstance(maps);
+
+        getFragmentManager().beginTransaction()
+                .add(activeFragment, "mapInfoFrag")
+                .addToBackStack("mapInfoFrag")
+                .commit();
+    }
+
+    public void showChartFragment(ArrayList<Map> maps) {
+        activeFragment
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_VIEW_STATE, viewState);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -89,7 +152,7 @@ public class ResultsActivity extends Activity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.action_share) {
-            ArrayList<Map> mapsToShare = ((IResultsFragment)activeFragment).getMapsToShare();
+            ArrayList<Map> mapsToShare = activeFragment.getActiveMaps();
 
             Document doc = null;
             try {

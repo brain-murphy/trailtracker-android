@@ -18,11 +18,15 @@ import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.ArrayList;
 
-public class ChartFragment extends Fragment implements ResultsActivity.IResultsFragment {
+public class ChartFragment extends ResultsSubFragment {
+
+    private static final String KEY_TIME_ARRAYS = "timearraykey";
+    private static final String KEY_VALUE_ARRAYS = "valueArrayskey";
+    private static final String KEY_TITLE = "titlekey";
 
     private long[][] timeArrays;
     private float[][] valueArrays;
-    private ArrayList<Map> mapsToShare;
+    private String title;
 
     private RelativeLayout layout;
 
@@ -35,10 +39,29 @@ public class ChartFragment extends Fragment implements ResultsActivity.IResultsF
     public static ChartFragment newInstance(String title, long[][] timeArrays,
             float[][] valueArrays, ArrayList<Map> mapsToShare) {
         ChartFragment fragment = new ChartFragment();
+        fragment.title = title;
         fragment.timeArrays = timeArrays;
         fragment.valueArrays = valueArrays;
-        fragment.mapsToShare = mapsToShare;
+        fragment.activeMaps = mapsToShare;
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            timeArrays = (long[][]) savedInstanceState.getSerializable(KEY_TIME_ARRAYS);
+            valueArrays = (float[][]) savedInstanceState.getSerializable(KEY_VALUE_ARRAYS);
+            title = savedInstanceState.getString(KEY_TITLE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_TITLE, title);
+        outState.putSerializable(KEY_TIME_ARRAYS, timeArrays);
+        outState.putSerializable(KEY_VALUE_ARRAYS, valueArrays);
     }
 
     public ChartFragment() {
@@ -68,6 +91,7 @@ public class ChartFragment extends Fragment implements ResultsActivity.IResultsF
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         layout = (RelativeLayout) inflater.inflate(R.layout.fragment_chart,container,false);
+        getActivity().setTitle(title);
         return layout;
     }
 
@@ -82,10 +106,5 @@ public class ChartFragment extends Fragment implements ResultsActivity.IResultsF
         } else {
             mChart.repaint();
         }
-    }
-
-    @Override
-    public ArrayList<Map> getMapsToShare() {
-        return mapsToShare;
     }
 }

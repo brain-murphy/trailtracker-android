@@ -16,6 +16,7 @@ import com.google.android.gms.maps.MapFragment;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -23,24 +24,37 @@ import java.util.Calendar;
  * A simple {@link Fragment} subclass.
  *
  */
-public class MapInfoFragment extends Fragment {
+public class MapInfoFragment extends ResultsSubFragment {
 
-    private Map mapData;
     private static final String KEY_VALS = "valskey";
     private static final String KEY_TIMES = "teimeskey";
 
+    private Map mapData;
 
-    public static MapInfoFragment newInstance(Map mapData){
+    /**
+     * creates and instatiates new {@link MapInfoFragment} as per
+     * the Android design recommendations
+     * @param maps {@link ArrayList} containing a single map to display.
+     * @return A new Map InfoFragment that is ready for display.
+     */
+    public static MapInfoFragment newInstance(ArrayList<Map> maps){
         MapInfoFragment fragment = new MapInfoFragment();
-        fragment.mapData = mapData;
+        fragment.activeMaps = maps;
+        fragment.mapData = maps.get(0);
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            mapData = activeMaps.get(0);
+        }
+    }
 
     public MapInfoFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

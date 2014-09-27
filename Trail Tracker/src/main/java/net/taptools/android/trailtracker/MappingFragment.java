@@ -26,13 +26,7 @@ import java.util.ArrayList;
  * In a hierarchy of Fragments on something like a backstack.
  *
  */
-public class MappingFragment extends Fragment implements ResultsActivity.IResultsFragment {
-
-    //Key for retaining the ids of the maps on display in the outState //
-    private static final String KEY_MAP_IDS = "mapids";
-
-    //ArrayList to hold all maps on display//
-    private ArrayList<Map> mapData = null;
+public class MappingFragment extends ResultsSubFragment {
 
     //Layouts, views//
     private LinearLayout keyLayout;
@@ -45,38 +39,12 @@ public class MappingFragment extends Fragment implements ResultsActivity.IResult
      */
     public static MappingFragment newInstance(ArrayList<Map> maps){
         MappingFragment fragment = new MappingFragment();
-        fragment.mapData = maps;
+        fragment.activeMaps = maps;
         return fragment;
     }
 
-
-    /**
-     * required empty public default constructor
-     */
-    public MappingFragment() {}
-
-    /**
-     * OnCreate callback used to read map data from database iff the fragment is being restored
-     * from a saved instance state.
-     * @param savedInstanceState
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        if(savedInstanceState!=null){
-            TTSQLiteOpenHelper dbHelper = ((MyApplication)getActivity().getApplication())
-                    .getDatabaseHelper();
-            ArrayList<Integer> ids = savedInstanceState.getIntegerArrayList(KEY_MAP_IDS);
-            if(ids!=null){
-                if (mapData == null) {
-                   mapData = new ArrayList<Map>();
-                }
-                for(Integer id : ids){
-                    mapData.add(Map.instanceOf(dbHelper,id));
-                }
-            }
-        }
+    public MappingFragment() {
+        //required empty default constructor
     }
 
     /**
@@ -108,36 +76,21 @@ public class MappingFragment extends Fragment implements ResultsActivity.IResult
             }
         };
 
-//        getFragmentManager().beginTransaction()
-//                .add(R.id.mapFrame_Mapping,mapFragment)
-//                .commit();
+        getFragmentManager().beginTransaction()
+                .add(R.id.mapFrame_Mapping,mapFragment)
+                .commit();
         root.findViewById(R.id.mapInfoButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InfoChoiceDialogFragment.newInstance(mapData).show(getFragmentManager(),
+                InfoChoiceDialogFragment.newInstance(activeMaps).show(getFragmentManager(),
                         "mapChooserDialogFrag");
             }
         });
         return root;
     }
 
-    /**
-     * Adds the ids of the maps on display to the outState, using
-     * {@link MappingFragment#KEY_MAP_IDS}
-     * @param outState
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        ArrayList<Integer> ids = new ArrayList<Integer>(mapData.size());
-        for(Map map : mapData){
-            ids.add(map.getId());
-        }
-        outState.putIntegerArrayList(KEY_MAP_IDS,ids);
-    }
-
     private void onMapReady(){
-        for (Map mapDatum : mapData) {
+        for (Map mapDatum : activeMaps) {
             mapFragment.getMap().addPolyline(mapDatum.getPolyline());
             for (Stop stop : mapDatum.getStops()) {
                 mapFragment.getMap().addMarker(stop.getMarker());
@@ -146,11 +99,6 @@ public class MappingFragment extends Fragment implements ResultsActivity.IResult
                 mapFragment.getMap().addMarker(wp.getMarker());
             }
         }
-    }
-
-    @Override
-    public ArrayList<Map> getMapsToShare() {
-        return mapData;
     }
 
     /**
