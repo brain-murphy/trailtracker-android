@@ -1,18 +1,12 @@
 package net.taptools.android.trailtracker;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ListView;
-
-import net.taptools.android.trailtracker.R;
 
 import org.w3c.dom.Document;
 
@@ -24,12 +18,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.zip.CheckedOutputStream;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -52,9 +43,6 @@ public class ResultsActivity extends Activity {
     private static final String TAG_CHART_FRAG = "tagchartFrag";
     private static final String[] TAGS_SEQUENCED = {TAG_MAPPING_FRAG, TAG_INFO_FRAG, TAG_CHART_FRAG};
 
-    //private ResultsSubFragment activeFragment;
-
-    //private ArrayList<Map> maps;
     private FrameLayout layout;
 
     @Override
@@ -96,37 +84,46 @@ public class ResultsActivity extends Activity {
             mapIds = savedInstanceState.getIntArray(KEY_MAP_IDS);
         }
 
-        maps = new ArrayList<Map>(mapIds.length);
+        ArrayList<Map> maps = new ArrayList<Map>(mapIds.length);
         for (int id : mapIds) {
             maps.add(Map.instanceOf(helper,id));
         }
 
         layout = new FrameLayout(this);
         setContentView(layout);
-        activeFragment = MappingFragment.newInstance(maps);
 
         getFragmentManager().beginTransaction()
-                .add(activeFragment,"mappingFrag")
+                .add(MappingFragment.newInstance(maps),"mappingFrag")
                 .addToBackStack("mappingFrag")
                 .commit();
     }
 
     public void showInfoFragment(ArrayList<Map> maps) {
         assert maps.size() == 1;
-        activeFragment = MapInfoFragment.newInstance(maps);
 
         getFragmentManager().beginTransaction()
-                .add(activeFragment, "mapInfoFrag")
+                .add(MapInfoFragment.newInstance(maps), "mapInfoFrag")
                 .addToBackStack("mapInfoFrag")
                 .commit();
+        viewState = STATE_INFO;
     }
 
-    public void showChartFragment(ArrayList<Map> maps) {
-        activeFragment
+    public void showChartFragment(String title, long[][] timeArrays, float[][] valueArrays,
+                                  ArrayList<Map> maps) {
+        getFragmentManager().beginTransaction()
+                .add(ChartFragment.newInstance(title, timeArrays, valueArrays,maps), TAG_CHART_FRAG)
+                .addToBackStack(TAG_CHART_FRAG)
+                .commit();
+        viewState = STATE_CHART;
     }
 
     @Override
     public void onBackPressed() {
+        if (viewState > STATE_MAPPING) {
+            FragmentManager manager = getFragmentManager();
+            String name = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
+            viewState = name.equals(TAG_MAPPING_FRAG) ? 0 : 1;
+        }
         super.onBackPressed();
     }
 
@@ -152,7 +149,10 @@ public class ResultsActivity extends Activity {
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.action_share) {
-            ArrayList<Map> mapsToShare = activeFragment.getActiveMaps();
+            FragmentManager manager = getFragmentManager();
+            ResultsSubFragment frag = (ResultsSubFragment) manager.findFragmentByTag(
+                    TAGS_SEQUENCED[viewState]);
+            ArrayList<Map> mapsToShare = frag.getActiveMaps();
 
             Document doc = null;
             try {
@@ -193,6 +193,7 @@ public class ResultsActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        
         return super.onOptionsItemSelected(item);
     }
 }
