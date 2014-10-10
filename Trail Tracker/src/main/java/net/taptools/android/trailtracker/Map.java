@@ -75,7 +75,7 @@ public class Map {
         db.delete(TABLE_MAPS,COLUMN_ID+" = "+id, null);
     }
 
-    public PolylineOptions getPolyline(){//TODO anti aliasing of line. Account for stops
+    public PolylineOptions getNewPolyline(){//TODO anti aliasing of line. Account for stops
         PolylineOptions options = new PolylineOptions();
         for(int pointIndex = 0; pointIndex<locations.length;pointIndex++){
             options.add(locations[pointIndex].toLatLng());
@@ -158,6 +158,16 @@ public class Map {
                 .append(loc.getTime()).append(",")
                 .append(loc.getTime()/1000).append(",")
                 .append(loc.getDistance()).append(";").append("\n");
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Map && ((Map) other).getId() == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.toString(id).hashCode();
     }
 
     public int getId() {

@@ -30,7 +30,7 @@ public abstract class ResultsSubFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (savedInstanceState.containsKey(KEY_MAP_IDS)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_MAP_IDS)) {
             TTSQLiteOpenHelper helper =((MyApplication)getActivity().getApplication())
                     .getDatabaseHelper();
             int[] ids = savedInstanceState.getIntArray(KEY_MAP_IDS);

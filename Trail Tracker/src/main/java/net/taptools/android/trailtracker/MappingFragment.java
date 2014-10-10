@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.MapFragment;
 
@@ -77,7 +78,7 @@ public class MappingFragment extends ResultsSubFragment {
         };
 
         getFragmentManager().beginTransaction()
-                .add(R.id.mapFrame_Mapping,mapFragment)
+                .add(R.id.mapFrameMappingFrag, mapFragment)
                 .commit();
         root.findViewById(R.id.mapInfoButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,12 +87,67 @@ public class MappingFragment extends ResultsSubFragment {
                         "mapChooserDialogFrag");
             }
         });
+
+        Spinner spinner = (Spinner) root.findViewById(R.id.chartSpinner);
+        ArrayAdapter<String> aa = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,
+                new String[]{"Chart Speed", "Chart Altitiude"});
+        spinner.setAdapter(aa);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean justInstantiated = true;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (justInstantiated) {
+                    justInstantiated = !justInstantiated;
+                    return;
+                }
+                Log.d("MappingFragment.AdapterView#onItemSelected", "called");
+                long[][] timeArrays = new long[activeMaps.size()][];
+                float[][] valueArrays = new float[activeMaps.size()][];
+                String chartTitle = null;
+                if (position == 0) {
+                    //Chart Speed//
+                    chartTitle = "Speeds";
+                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
+                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
+                        long[] times = new long[locs.length];
+                        float[] speeds = new float[locs.length];
+                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
+                            times[locIndex] = locs[locIndex].getTime();
+                            speeds[locIndex] = locs[locIndex].getSpeed();
+                        }
+                        timeArrays[mapIndex] = times;
+                        valueArrays[mapIndex] = speeds;
+                    }
+                } else if (position == 1) {
+                    //Chart Altitude//
+                    chartTitle = "Altitudes";
+                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
+                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
+                        long[] times = new long[locs.length];
+                        float[] alts = new float[locs.length];
+                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
+                            times[locIndex] = locs[locIndex].getTime();
+                            alts[locIndex] = locs[locIndex].getElevation();
+                        }
+                        timeArrays[mapIndex] = times;
+                        valueArrays[mapIndex] = alts;
+                    }
+                }
+                ((ResultsActivity) getActivity()).showChartFragment(chartTitle, timeArrays,
+                        valueArrays, activeMaps);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Log.i("MappingFragment#Spinner", "nothing selected");
+            }
+        });
         return root;
     }
 
     private void onMapReady(){
         for (Map mapDatum : activeMaps) {
-            mapFragment.getMap().addPolyline(mapDatum.getPolyline());
+            mapFragment.getMap().addPolyline(mapDatum.getNewPolyline());
             for (Stop stop : mapDatum.getStops()) {
                 mapFragment.getMap().addMarker(stop.getMarker());
             }
@@ -126,21 +182,13 @@ public class MappingFragment extends ResultsSubFragment {
                     .setAdapter(adapter, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d("InfoChoiceDialog", "onClick");
+                            Log.i("InfoChoiceDialog", "onClick");
+                            ArrayList<Map> map_s = new ArrayList<Map>(1);
+                            map_s.add(maps.get(which));
+                            ((ResultsActivity)getActivity()).showInfoFragment(map_s);
                         }
                     })
                     .setTitle("Choose a Map")
-                    .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            Log.d("InfoChoiceDialog", "onItemSelecteds");
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    })
                     .create();
         }
     }

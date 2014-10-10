@@ -3,7 +3,9 @@ package net.taptools.android.trailtracker;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -49,7 +51,8 @@ public class ResultsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState.containsKey(KEY_VIEW_STATE)) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_VIEW_STATE)) {
+            Log.d("ResultsActivity#onCreate()", "restoring");
             viewState = savedInstanceState.getInt(KEY_VIEW_STATE, 0);
             FragmentManager manager = getFragmentManager();
             Stack<ResultsSubFragment> fragStack = new Stack<ResultsSubFragment>();
@@ -90,10 +93,12 @@ public class ResultsActivity extends Activity {
         }
 
         layout = new FrameLayout(this);
+        //noinspection ResourceType
+        layout.setId(100);
         setContentView(layout);
 
         getFragmentManager().beginTransaction()
-                .add(MappingFragment.newInstance(maps),"mappingFrag")
+                .add(layout.getId(), MappingFragment.newInstance(maps),"mappingFrag")
                 .addToBackStack("mappingFrag")
                 .commit();
     }
@@ -102,7 +107,7 @@ public class ResultsActivity extends Activity {
         assert maps.size() == 1;
 
         getFragmentManager().beginTransaction()
-                .add(MapInfoFragment.newInstance(maps), "mapInfoFrag")
+                .replace(layout.getId(), MapInfoFragment.newInstance(maps), "mapInfoFrag")
                 .addToBackStack("mapInfoFrag")
                 .commit();
         viewState = STATE_INFO;
@@ -110,8 +115,9 @@ public class ResultsActivity extends Activity {
 
     public void showChartFragment(String title, long[][] timeArrays, float[][] valueArrays,
                                   ArrayList<Map> maps) {
+        Log.d("ResultsActivity#showChartFragment", "called");
         getFragmentManager().beginTransaction()
-                .add(ChartFragment.newInstance(title, timeArrays, valueArrays,maps), TAG_CHART_FRAG)
+                .replace(layout.getId(), ChartFragment.newInstance(title, timeArrays, valueArrays, maps), TAG_CHART_FRAG)
                 .addToBackStack(TAG_CHART_FRAG)
                 .commit();
         viewState = STATE_CHART;
@@ -183,6 +189,15 @@ public class ResultsActivity extends Activity {
                 Transformer transformer = tf.newTransformer();
                 transformer.transform(domSource, result);
                 out.write(writer.toString());
+
+                Uri uri = Uri.fromFile(kmlFile);
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "TrailTracker KML Export!");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Open the attached KML file on an Android "
+                        + "or iOS smartphone to view.");
+                startActivity(Intent.createChooser(emailIntent, "Email Export..."));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (TransformerConfigurationException e) {
@@ -193,7 +208,7 @@ public class ResultsActivity extends Activity {
                 e.printStackTrace();
             }
         }
-        
+
         return super.onOptionsItemSelected(item);
     }
 }

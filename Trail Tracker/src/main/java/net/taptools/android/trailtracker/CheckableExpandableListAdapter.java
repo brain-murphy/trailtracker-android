@@ -20,66 +20,73 @@ import java.util.LinkedHashMap;
 public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    /**
-     * categoryNames stores the names of the groups or categories
-     * childrenGroups stores lists of the individual data items to
-     *                to display, grouped by the name category
-     * ids stores the id of each child in the order they are served from childrenGroups
-     */
-    private ArrayList<String> categoryNames;
-    private LinkedHashMap<String, ArrayList<String>> childrenGroups;
+
+    private volatile ArrayList<String> categoryNames;
+    private volatile LinkedHashMap<String, ArrayList<String>> childrenGroups;
+    private volatile ArrayList<Integer> ids;
+
     private ArrayList<Integer> groupSizes;
-    /**
-     * allChildren is a consolidated list of all data points
-     * enabledChildren shows which data points are currently
-     *                  displayed by storing a true or false
-     *                  at their index in the array,
-     *                  corresponding to an element in the
-     *                  allChildren List.
-     */
     private ArrayList<String> allChildren;
     private boolean[] enabledChildren;
 
     public CheckableExpandableListAdapter(Context context, ArrayList<String> listDataHeader,
-                                          LinkedHashMap<String, ArrayList<String>> listChildData ){
+                                          LinkedHashMap<String, ArrayList<String>> listChildData,
+                                          ArrayList<Integer> ids) {
         this.context = context;
         childrenGroups = listChildData;
+        Log.d("Checkable", "childrenGroups size: " + childrenGroups.size());
+        Log.d("Checkable", "childrenGroups sizeOfFirst: " + childrenGroups.get(childrenGroups.get(0)));
         categoryNames = listDataHeader;
+        this.ids = ids;
 
         groupSizes = new ArrayList<Integer>();
-        //Initialize and fill allChildren ArrayList
+
+        //Initialize and fill allChildren ArrayList//
         allChildren = new ArrayList<String>();
-        for(int groupIndex = 0; groupIndex<categoryNames.size(); groupIndex++){
+        for (int groupIndex = 0; groupIndex < categoryNames.size(); groupIndex++) {
             ArrayList<String> group = childrenGroups.get(categoryNames.get(groupIndex));
-            for(int childIndex = 0; childIndex<group.size(); childIndex++){
+            for (int childIndex = 0; childIndex < group.size(); childIndex++) {
                 allChildren.add((String) getChild(groupIndex, childIndex));
-                groupSizes.add(groupIndex,childIndex+1);
+                groupSizes.add(groupIndex, childIndex + 1);
             }
         }
-
-
         enabledChildren = new boolean[allChildren.size()];
+        Log.d("CheckableExpandableListAdapter", "ctor called, enabledChildrenset");
     }
 
-    /**
-     * gets array to show which data points should be displayed
-     * @return an array of booleans that corresponds to the array of all
-     * data points. If an element is true, the data point with the same
-     * index should be displayed in the report fragment
-     */
-    public boolean[] getEnabledChildren(){
-        return enabledChildren;
+    @Override
+    public void notifyDataSetChanged() {
+        //Initialize and fill allChildren ArrayList//
+        Log.d("Checkable#notfyDataSetChanged()", "enabledChildred size: " + enabledChildren.length);
+        allChildren = new ArrayList<String>();
+        groupSizes = new ArrayList<Integer>();
+        for (int groupIndex = 0; groupIndex < categoryNames.size(); groupIndex++) {
+            ArrayList<String> group = childrenGroups.get(categoryNames.get(groupIndex));
+            for (int childIndex = 0; childIndex < group.size(); childIndex++) {
+                allChildren.add((String) getChild(groupIndex, childIndex));
+                groupSizes.add(groupIndex, childIndex + 1);
+            }
+        }
+        enabledChildren = new boolean[allChildren.size()];
+
+        //now that things are re-set up//
+        super.notifyDataSetChanged();
     }
 
     /**
      * allows the containing Fragment to set which data points should
      * be displayed based on ListView input.
-     * @param index index of data point to be enabled or disabled
+     * @param id id of map entry to be displayed as checked
      * @param enabled true to enable; false to disable
      */
-    public void setChildEnabled(int index, boolean enabled){
-        Log.d("setChildEnabled","index:"+index);
-        enabledChildren[index]=enabled;
+    public void setChildChecked(int id, boolean enabled) {
+        Log.d("Checkable#setChildChecked", "id: "+ id + " enabled: " + enabled);
+        for (int idIndex = 0; idIndex < ids.size(); idIndex++) {
+            if (ids.get(idIndex) == id) {
+                enabledChildren[idIndex] = enabled;
+                break;
+            }
+        }
     }
 
     /**
@@ -93,6 +100,14 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
         return  childrenGroups.get(categoryNames.get(groupPosition)).get(childPosition);
     }
 
+    public int getChildIndex(int groupPosition, int childPosition) {
+        int index = 0;
+        for (int groupIndex = 0;groupIndex<groupPosition;groupIndex++) {
+            index += groupSizes.get(groupIndex);
+        }
+        return index + childPosition;
+    }
+
     /**
      *
      * @param groupPosition the category index in which the child resides
@@ -101,11 +116,7 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
      */
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        int index=0;
-        for(int groupIndex = 0;groupIndex<groupPosition;groupIndex++){
-            index+=groupSizes.get(groupIndex);
-        }
-        return index+childPosition;
+        return ids.get(getChildIndex(groupPosition, childPosition));
     }
 
     /**
@@ -120,15 +131,15 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
                              View convertView, ViewGroup parent) {
-        final String childText = (String) getChild(groupPosition,childPosition);
-        if(convertView == null){
+        final String childText = (String) getChild(groupPosition, childPosition);
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.checkable_expandable_list_view_child,null);
+            convertView = inflater.inflate(R.layout.checkable_expandable_list_view_child, null);
         }
         CheckedTextView textView = (CheckedTextView) convertView.findViewById(android.R.id.text1);
         textView.setText(childText);
-        textView.setChecked(enabledChildren[(int)getChildId(groupPosition,childPosition)]);
+        textView.setChecked(enabledChildren[getChildIndex(groupPosition, childPosition)]);
         return convertView;
     }
 
@@ -163,15 +174,15 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
-        if(convertView==null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(android.R.layout.simple_expandable_list_item_2,null);
         }
         TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
         textView.setText(headerTitle);
-        ((TextView)convertView.findViewById(android.R.id.text2))
-                .setText(getChildrenCount(groupPosition)+" Maps");
+        ((TextView) convertView.findViewById(android.R.id.text2))
+                .setText(getChildrenCount(groupPosition) + " Maps");
         return convertView;
     }
 
