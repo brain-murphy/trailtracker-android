@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,9 +101,9 @@ public class MapInfoFragment extends ResultsSubFragment {
         ((TextView)root.findViewById(R.id.notesTextView)).setText(notes);
         Calendar mapCal = Calendar.getInstance();
         mapCal.setTimeInMillis(mapData.getStartTime());
-        String dateString = String.format("%02d/%02d/% %02d:%02d%",mapCal.get(Calendar.MONTH),
+        String dateString = String.format("%02d/%02d/%d %02d:%02d%s",mapCal.get(Calendar.MONTH),
                 mapCal.get(Calendar.DATE),mapCal.get(Calendar.YEAR),mapCal.get(Calendar.HOUR),
-                mapCal.get(Calendar.MINUTE),mapCal.get(Calendar.AM_PM));
+                mapCal.get(Calendar.MINUTE),mapCal.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM");
         ((TextView)root.findViewById(R.id.whenRecordedTextView)).setText(dateString);
         ((TextView)root.findViewById(R.id.timeTextView_info)).setText(mapData.getFormattedTime());
         ((TextView)root.findViewById(R.id.totalDistanceTextView)).setText(
