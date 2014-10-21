@@ -2,6 +2,7 @@ package net.taptools.android.trailtracker;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class MapsListFragment extends Fragment {
      *                 groupTitles ArrayList.
      * @return A new instance of fragment MapsListFragment.
      */
-    public static MapsListFragment newInstance(ArrayList<String> groupTitles, HashMap<String,
+    public static MapsListFragment newInstance(ArrayList<String> groupTitles, LinkedHashMap<String,
             ArrayList<String>> children, int[] ids, MultiPickerFragment parent){
         MapsListFragment fragment = new MapsListFragment();
         fragment.multiPickerFragment = parent;
@@ -65,7 +66,7 @@ public class MapsListFragment extends Fragment {
         int[] ids = getArguments().getIntArray(ARG_IDS);
         for(int idIndex = 0; idIndex<ids.length;idIndex++ ){
             if(ids[idIndex]==mapId){
-                listAdapter.setChildEnabled(idIndex,true);
+                listAdapter.setChildChecked(idIndex,true);
                 listAdapter.notifyDataSetChanged();
             }
             return;
@@ -75,14 +76,16 @@ public class MapsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("MapsListFragment#onCreateView()", "called");
         //typical creation of views
         View root = inflater.inflate(R.layout.fragment_expandable_list, container, false);
         expandableListView = (ExpandableListView) root.findViewById(R.id.expandableListView);
         //pass data point info and which are already enabled/disabled
-        listAdapter = new CheckableExpandableListAdapter(getActivity(),
-                getArguments().getStringArrayList(ARG_GROUP_TITLES),
-                (LinkedHashMap<String, ArrayList<String>>)
-                getArguments().getSerializable(ARG_CHILDREN));
+//        listAdapter = new CheckableExpandableListAdapter(getActivity(),
+//                getArguments().getStringArrayList(ARG_GROUP_TITLES),
+//                (LinkedHashMap<String, ArrayList<String>>)
+//                getArguments().getSerializable(ARG_CHILDREN));
+
         expandableListView.setAdapter(listAdapter);
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -90,7 +93,7 @@ public class MapsListFragment extends Fragment {
                 //control checking/unchecking and store enabling/disabling
                 CheckedTextView ctv = (CheckedTextView)v;
                 ctv.toggle();
-                listAdapter.setChildEnabled((int)id,ctv.isChecked());
+               // listAdapter.setChildEnabled((int)id,ctv.isChecked());
                 int[] mapIds = getArguments().getIntArray(ARG_IDS);
                 if(ctv.isChecked()){
                     multiPickerFragment.addToMap(mapIds[(int)id]);

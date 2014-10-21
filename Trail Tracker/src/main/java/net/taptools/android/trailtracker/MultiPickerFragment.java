@@ -71,7 +71,7 @@ public class MultiPickerFragment extends Fragment {
      * @param mapId id of map to display if specific map is requested
      * @return A new instance of fragment
      */
-    public static MultiPickerFragment newInstance(int mapId,ResultsFragment parent) {
+    public static MultiPickerFragment newInstance(int mapId, ResultsFragment parent) {
         MultiPickerFragment fragment = new MultiPickerFragment();
         Bundle args = new Bundle();
         args.putInt(KEY_MAP_ID, mapId);
@@ -93,12 +93,7 @@ public class MultiPickerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         setHasOptionsMenu(true);
-        if (getArguments() != null&& getArguments().containsKey(KEY_MAP_ID)) {
-            id_mapToDisplay = getArguments().getInt(KEY_MAP_ID);
-            //TODO display or place emphasis on this map.
-        }
     }
 
     @Override
@@ -114,28 +109,21 @@ public class MultiPickerFragment extends Fragment {
                 .add(R.id.mapFragmentWindow_results, mapFragment)
                 .commit();
 
-        ((Button)layout.findViewById(R.id.viewMapsButton)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(parent.getActiveMaps().size()>0) {
-                    //parent.startMappingFragment(parent.getActiveMaps());
-                    Intent intent = new Intent(getActivity(), ResultsActivity.class);
-                    ArrayList<Map> maps = parent.getActiveMaps();
-                    int[] mapIds = new int[maps.size()];
-                    for (int mapIndex = 0; mapIndex < maps.size(); mapIndex++) {
-                        mapIds[mapIndex] = maps.get(mapIndex).getId();
-                    }
-                    intent.putExtra(ResultsActivity.KEY_MAP_IDS, mapIds);
-                    startActivity(intent);
-                }
-            }
-        });
-        if(savedInstanceState != null){
-            ArrayList<Integer> ids = savedInstanceState.getIntegerArrayList(KEY_ACTIVE_MAP_IDS);
-            for(Integer id : ids){
-                addToMap(id);
-            }
-        }
+//        ((Button)layout.findViewById(R.id.viewMapsButton)).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (parent.getActiveMaps().size() > 0) {
+//                    Intent intent = new Intent(getActivity(), ResultsActivity.class);
+//                    ArrayList<Map> maps = parent.getActiveMaps();
+//                    int[] mapIds = new int[maps.size()];
+//                    for (int mapIndex = 0; mapIndex < maps.size(); mapIndex++) {
+//                        mapIds[mapIndex] = maps.get(mapIndex).getId();
+//                    }
+//                    intent.putExtra(ResultsActivity.KEY_MAP_IDS, mapIds);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
         return root;
     }
 
@@ -145,7 +133,7 @@ public class MultiPickerFragment extends Fragment {
         sqliteOpenHelper = ((MyApplication)getActivity().getApplication()).getDatabaseHelper();
         readableDb = sqliteOpenHelper.getReadableDatabase();
         updateList();
-        if(MultiPickerFragment.this.getArguments()!=null)
+        if(MultiPickerFragment.this.getArguments() != null)
             mapsListFragment.selectMap(MultiPickerFragment.this.getArguments().getInt(KEY_MAP_ID));
     }
 
@@ -154,7 +142,7 @@ public class MultiPickerFragment extends Fragment {
         if(mapsListFragment !=null){
             manager.beginTransaction().remove(mapsListFragment)
                     .commit();
-            parent.setActiveMaps(null);
+//            parent.setActiveMaps(null);
             for(Polyline pl: polylines){
                 pl.remove();
             }
@@ -232,16 +220,16 @@ public class MultiPickerFragment extends Fragment {
 
     public void addToMap(int mapId){
         Map mapData = Map.instanceOf(sqliteOpenHelper,mapId);
-        if(parent.getActiveMaps() == null){
-            parent.setActiveMaps(new ArrayList<Map>());
-        }
+//        if(parent.getActiveMaps() == null){
+//            parent.setActiveMaps(new ArrayList<Map>());
+//        }
         if(polylines == null){
             polylines = new ArrayList<Polyline>();
         }
         if(activeMarkers == null){
             activeMarkers = new HashMap<Integer, ArrayList<Marker>>();
         }
-        parent.getActiveMaps().add(mapData);
+//        parent.getActiveMaps().add(mapData);
         PolylineOptions polylineOptions = new PolylineOptions();
         for(int locationIndex = 0; locationIndex<mapData.getLocations().length; locationIndex++){
             LatLng latLng = new LatLng(mapData.getLocations()[locationIndex].getLatitude(),
@@ -262,72 +250,24 @@ public class MultiPickerFragment extends Fragment {
     }
 
     public void removeFromMap(int mapId){
-        if(parent.getActiveMaps() == null){
-            Log.d("MultiPickerFragment removeFromMap()", "activeMaps is null");
-        }
-        for(int mapIndex=0; mapIndex<parent.getActiveMaps().size();mapIndex++){
-            if(parent.getActiveMaps().get(mapIndex).getId()==mapId){
-                parent.getActiveMaps().remove(mapIndex);
-                polylines.get(mapIndex).remove();
-                polylines.remove(mapIndex);
-                colorMarker--;
-
-                ArrayList<Marker> markers = activeMarkers.get(mapId);
-                for(Marker marker : markers){
-                    marker.remove();
-                }
-                activeMarkers.remove(mapId);
-                break;
-            }
-        }
+//        if(parent.getActiveMaps() == null){
+//            Log.d("MultiPickerFragment removeFromMap()", "activeMaps is null");
+//        }
+//        for(int mapIndex=0; mapIndex<parent.getActiveMaps().size();mapIndex++){
+//            if(parent.getActiveMaps().get(mapIndex).getId()==mapId){
+//                parent.getActiveMaps().remove(mapIndex);
+//                polylines.get(mapIndex).remove();
+//                polylines.remove(mapIndex);
+//                colorMarker--;
+//
+//                ArrayList<Marker> markers = activeMarkers.get(mapId);
+//                for(Marker marker : markers){
+//                    marker.remove();
+//                }
+//                activeMarkers.remove(mapId);
+//                break;
+//            }
+//        }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        FragmentManager fm = getFragmentManager();
-        try {
-            if (mapFragment != null) {
-                fm.beginTransaction()
-                        .remove(mapFragment)
-                        .commit();
-                mapFragment = null;
-            }
-            if (mapsListFragment != null) {
-                fm.beginTransaction()
-                        .remove(mapsListFragment)
-                        .commit();
-                mapsListFragment = null;
-            }
-        }catch(IllegalStateException e){
-            Log.e("destroying Fragment", "activity already destroyed");
-        }
-    }
-
-    @SuppressLint("ValidFragment")
-    private class ConfirmDeleteDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Are you sure you want to delete map(s)")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            for(Map map : parent.getActiveMaps()){
-                                SQLiteDatabase db =sqliteOpenHelper.getWritableDatabase();
-                                db.delete(TABLE_STOPS,COLUMN_MAP_ID+" = "+map.getId(),null);
-                                db.delete(TABLE_WAYPOINTS, COLUMN_MAP_ID+" = "+map.getId(),null);
-                                db.delete(TABLE_LOCATIONS, COLUMN_MAP_ID+" = "+map.getId(),null);
-                                db.delete(TABLE_MAPS, COLUMN_ID+" = "+map.getId(), null);
-                            }
-                            updateList();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-            return builder.create();
-        }
-    }
 }

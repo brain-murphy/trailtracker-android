@@ -1,8 +1,5 @@
 package net.taptools.android.trailtracker;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,12 +75,13 @@ public class ChartFragment extends ResultsSubFragment {
         renderer.addSeriesRenderer(currentRenderer);
     }
 
-    private void addSampleData(){
+    private void addData(){
         for (int seriesIndex = 0; seriesIndex < currentSeriesList.size(); seriesIndex++) {
             long[] times = timeArrays[seriesIndex];
             float[] vals = valueArrays[seriesIndex];
-            for(int timeIndex = 0; timeIndex<times.length; timeIndex++){
-                currentSeriesList.get(seriesIndex).add(times[timeIndex],vals[timeIndex]);
+            for (int timeIndex = 0; timeIndex < times.length; timeIndex++) {
+                //standardize all lines to start at zero//
+                currentSeriesList.get(seriesIndex).add(times[timeIndex] - times[0], vals[timeIndex]);
             }
         }
     }
@@ -100,7 +98,7 @@ public class ChartFragment extends ResultsSubFragment {
         super.onResume();
         if (mChart == null) {
             initChart();
-            addSampleData();
+            addData();
             mChart = ChartFactory.getTimeChartView(getActivity(), dataset, renderer, null );
             layout.addView(mChart);
         } else {

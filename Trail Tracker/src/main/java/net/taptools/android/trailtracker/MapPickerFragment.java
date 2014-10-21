@@ -73,10 +73,6 @@ public class MapPickerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("MapPickerFragment#onCreateView()", "called");
-//        if(root!=null){
-//            return root;
-//        }
         root = (LinearLayout)inflater.inflate(R.layout.fragment_map_picker, container, false);
 
         LinkedHashMap<String,ArrayList<String>> groupsTable = new LinkedHashMap<String, ArrayList<String>>();
@@ -145,7 +141,7 @@ public class MapPickerFragment extends Fragment {
                 Map mapData = Map.instanceOf(databaseHelper,(int)id);
                 GoogleMap map = mapFrag.getMap();
                 map.clear();
-                map.addPolyline(mapData.getPolyline());
+                map.addPolyline(mapData.getNewPolyline());
 
                 for(Waypoint wp : mapData.getWaypoints()){
                     map.addMarker(wp.getMarker());
