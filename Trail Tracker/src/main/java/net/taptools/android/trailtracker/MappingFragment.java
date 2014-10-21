@@ -83,8 +83,14 @@ public class MappingFragment extends ResultsSubFragment {
         root.findViewById(R.id.mapInfoButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InfoChoiceDialogFragment.newInstance(activeMaps).show(getFragmentManager(),
-                        "mapChooserDialogFrag");
+                if (activeMaps.size() > 1) {
+                    InfoChoiceDialogFragment.newInstance(activeMaps).show(getFragmentManager(),
+                            "mapChooserDialogFrag");
+                } else {
+                    ArrayList<Map> map_s = new ArrayList<Map>(1);
+                    map_s.add(activeMaps.get(0));
+                    ((ResultsActivity)getActivity()).showInfoFragment(map_s);
+                }
             }
         });
 

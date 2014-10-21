@@ -211,7 +211,7 @@ public class TrailTrackingService extends Service implements
             }
 
             float[] distanceFromLast = {0f};
-            LatLng last = trail.get(trail.size() - 1);
+            LatLng last = trail.get(trail.size() - 2);
             Location.distanceBetween(last.latitude, last.longitude,
                     location.getLatitude(), location.getLongitude(), distanceFromLast);
             totalDistance += distanceFromLast[0];

@@ -1,21 +1,11 @@
 package net.taptools.android.trailtracker;
 
-
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.MapFragment;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,9 +16,6 @@ import java.util.Calendar;
  *
  */
 public class MapInfoFragment extends ResultsSubFragment {
-
-    private static final String KEY_VALS = "valskey";
-    private static final String KEY_TIMES = "teimeskey";
 
     private Map mapData;
 

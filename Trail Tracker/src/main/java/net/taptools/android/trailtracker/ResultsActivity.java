@@ -125,12 +125,20 @@ public class ResultsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (viewState > STATE_MAPPING) {
-            FragmentManager manager = getFragmentManager();
+        if(viewState == STATE_MAPPING) {
+            finish();
+        }
+
+        FragmentManager manager = getFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
             String name = manager.getBackStackEntryAt(manager.getBackStackEntryCount() - 1).getName();
             viewState = name.equals(TAG_MAPPING_FRAG) ? 0 : 1;
         }
         super.onBackPressed();
+    }
+
+    private boolean getBitAt(byte b, byte bitIndex) {
+        return ((b >> bitIndex) & 1) == 1;
     }
 
     @Override
