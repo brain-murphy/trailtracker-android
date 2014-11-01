@@ -26,10 +26,10 @@
         android:text="Map Info"
         android:alpha=".75"/>
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/chartSpinner"
-        android:layout_toLeftOf="@id/mapInfoButton"/>
+    <!--<Spinner-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/chartSpinner"-->
+        <!--android:layout_toLeftOf="@id/mapInfoButton"/>-->
 
 </RelativeLayout>

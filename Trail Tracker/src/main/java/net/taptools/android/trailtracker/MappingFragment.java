@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapFragment;
 
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ public class MappingFragment extends ResultsSubFragment {
     //Layouts, views//
     private LinearLayout keyLayout;
     private MapFragment mapFragment;
+
+    private int lastSpinnerPosition;
 
     /**
      * required public instantiation method
@@ -60,6 +61,7 @@ public class MappingFragment extends ResultsSubFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        lastSpinnerPosition = -1;
         View root = inflater.inflate(R.layout.fragment_mapping, container, false);
         keyLayout = (LinearLayout)root.findViewById(R.id.mapKeyLayout);
         mapFragment = new MapFragment() {
@@ -94,65 +96,66 @@ public class MappingFragment extends ResultsSubFragment {
             }
         });
 
-        Spinner spinner = (Spinner) root.findViewById(R.id.chartSpinner);
-        ArrayAdapter<String> aa = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,
-                new String[]{"Chart Speed", "Chart Altitiude"});
-        spinner.setAdapter(aa);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            private boolean justInstantiated = true;
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (justInstantiated) {
-                    justInstantiated = !justInstantiated;
-                    return;
-                }
-                Log.d("MappingFragment.AdapterView#onItemSelected", "called");
-                long[][] timeArrays = new long[activeMaps.size()][];
-                float[][] valueArrays = new float[activeMaps.size()][];
-                String chartTitle = null;
-                if (position == 0) {
-                    //Chart Speed//
-                    chartTitle = "Speeds";
-                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
-                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
-                        long[] times = new long[locs.length];
-                        float[] speeds = new float[locs.length];
-                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
-                            times[locIndex] = locs[locIndex].getTime();
-                            speeds[locIndex] = locs[locIndex].getSpeed();
-                        }
-                        timeArrays[mapIndex] = times;
-                        valueArrays[mapIndex] = speeds;
-                    }
-                } else if (position == 1) {
-                    //Chart Altitude//
-                    chartTitle = "Altitudes";
-                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
-                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
-                        long[] times = new long[locs.length];
-                        float[] alts = new float[locs.length];
-                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
-                            times[locIndex] = locs[locIndex].getTime();
-                            alts[locIndex] = locs[locIndex].getElevation();
-                        }
-                        timeArrays[mapIndex] = times;
-                        valueArrays[mapIndex] = alts;
-                    }
-                }
-                ((ResultsActivity) getActivity()).showChartFragment(chartTitle, timeArrays,
-                        valueArrays, activeMaps);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Log.i("MappingFragment#Spinner", "nothing selected");
-            }
-        });
+//        Spinner spinner = (Spinner) root.findViewById(R.id.chartSpinner);
+//        ArrayAdapter<String> aa = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
+//                new String[]{"Chart Speed", "Chart Altitiude"});
+//        spinner.setAdapter(aa);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (lastSpinnerPosition < 0 || lastSpinnerPosition == position) {
+//                    lastSpinnerPosition = position;
+//                    return;
+//                }
+//                Log.d("MappingFragment.AdapterView#onItemSelected", "called");
+//                long[][] timeArrays = new long[activeMaps.size()][];
+//                float[][] valueArrays = new float[activeMaps.size()][];
+//                String chartTitle = null;
+//                if (position == 0) {
+//                    //Chart Speed//
+//                    chartTitle = "Speeds";
+//                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
+//                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
+//                        long[] times = new long[locs.length];
+//                        float[] speeds = new float[locs.length];
+//                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
+//                            times[locIndex] = locs[locIndex].getTime();
+//                            speeds[locIndex] = locs[locIndex].getSpeed();
+//                        }
+//                        timeArrays[mapIndex] = times;
+//                        valueArrays[mapIndex] = speeds;
+//                    }
+//                } else if (position == 1) {
+//                    //Chart Altitude//
+//                    chartTitle = "Altitudes";
+//                    for (int mapIndex = 0; mapIndex < activeMaps.size(); mapIndex++) {
+//                        TTLocation[] locs = activeMaps.get(mapIndex).getLocations();
+//                        long[] times = new long[locs.length];
+//                        float[] alts = new float[locs.length];
+//                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
+//                            times[locIndex] = locs[locIndex].getTime();
+//                            alts[locIndex] = locs[locIndex].getElevation();
+//                        }
+//                        timeArrays[mapIndex] = times;
+//                        valueArrays[mapIndex] = alts;
+//                    }
+//                }
+//                ((ResultsActivity) getActivity()).showChartFragment(chartTitle, timeArrays,
+//                        valueArrays, activeMaps);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                Log.i("MappingFragment#Spinner", "nothing selected");
+//            }
+//        });
         return root;
     }
 
     private void onMapReady(){
         for (Map mapDatum : activeMaps) {
+            mapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    mapDatum.getLocations()[0].toLatLng(), 30f));
             mapFragment.getMap().addPolyline(mapDatum.getNewPolyline());
             for (Stop stop : mapDatum.getStops()) {
                 mapFragment.getMap().addMarker(stop.getMarker());

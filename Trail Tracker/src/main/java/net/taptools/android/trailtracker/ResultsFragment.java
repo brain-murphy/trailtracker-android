@@ -23,6 +23,7 @@ import android.widget.CheckedTextView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.Marker;
@@ -151,6 +152,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                 //set a (unique) color. (Only five colors)//
                 line.color(getAColor());
                 polylines.put(mapData, map.addPolyline(line));
+                mapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        mapData.getLocations()[0].toLatLng(), 30f));
 
                 ArrayList<Marker> markerList = new ArrayList<Marker>();
                 for (Waypoint wp : mapData.getWaypoints()) {
