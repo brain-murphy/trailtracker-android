@@ -108,7 +108,7 @@ public class TTSQLiteOpenHelper extends SQLiteOpenHelper{
             "FOREIGN KEY("+COLUMN_END_LOCATION_ID+") REFERENCES "+TABLE_LOCATIONS+"("+COLUMN_ID+") " +
             "FOREIGN KEY("+COLUMN_MAP_ID+") REFERENCES "+ TABLE_MAPS+"("+COLUMN_ID+") );";
     public TTSQLiteOpenHelper(Context context){
-        super(context, DATABASE_NAME,null,DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 

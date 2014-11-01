@@ -33,8 +33,8 @@ import java.util.Calendar;
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
 public class TrailTrackingService extends Service implements
-        GooglePlayServicesClient.ConnectionCallbacks,
-        LocationListener {
+        GooglePlayServicesClient.ConnectionCallbacks, LocationListener {
+
     public static final String KEY_MAP_ID = "mapidkey";
 
     private MainActivity listener;
@@ -70,7 +70,7 @@ public class TrailTrackingService extends Service implements
     private double endAltitude;
     private double firstLat;
     private double firstLong;
-    long lastLocId=-1;
+    long lastLocId = -1;
 
 
     @Override
@@ -79,35 +79,35 @@ public class TrailTrackingService extends Service implements
         PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.preferences, false);
     }
 
-    private void startServingLocations(){
-        if(!isStarted)
+    private void startServingLocations() {
+        if (!isStarted)
             locationIntermediary = simpleLocIntermediary;
         isServingLocations = true;
         request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         request.setInterval(1000);
         request.setFastestInterval(1000);
-        client = new LocationClient(listener,this,listener);
+        client = new LocationClient(listener, this, listener);
         client.connect();
     }
 
-    private void stopServingLocations(){
-        Log.d("TrailTrackingService#stopServingLocations()","called");
-        if(client == null){
+    private void stopServingLocations() {
+        Log.d("TrailTrackingService#stopServingLocations()", "called");
+        if (client == null) {
             Log.d("TrailTrackingService onDestroy()", "client null");
-        }else {
+        } else {
             if (client.isConnected()) {
                 client.removeLocationUpdates(this);
             }
             client.disconnect();
         }
-        isServingLocations =false;
+        isServingLocations = false;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mapId = intent.getLongExtra(KEY_MAP_ID,-1);
-        totalDistance =0;
+        mapId = intent.getLongExtra(KEY_MAP_ID, -1);
+        totalDistance = 0;
         maxSpeed = 0;
         maxAltitude = 0;
         minAltitude = 0;
@@ -117,7 +117,7 @@ public class TrailTrackingService extends Service implements
         stops = new ArrayList<Marker>();
         if(!isServingLocations)
             startServingLocations();
-        databaseHelper = ((MyApplication)getApplication()).getDatabaseHelper();
+        databaseHelper = ((MyApplication) getApplication()).getDatabaseHelper();
         writableDatabase = databaseHelper.getWritableDatabase();
         locationIntermediary = new StarterIntermediary();
         isStarted = true;
@@ -126,13 +126,13 @@ public class TrailTrackingService extends Service implements
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("TrailTrackingService#onBind()","called");
+        Log.d("TrailTrackingService#onBind()", "called");
         return binder;
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        client.requestLocationUpdates(request,this);
+        client.requestLocationUpdates(request, this);
     }
 
     @Override
@@ -143,9 +143,9 @@ public class TrailTrackingService extends Service implements
     @Override
     public void onDestroy() {
         Log.d("TrailTrackingService onDestroy()", "called");
-        if(client == null){
+        if (client == null){
             Log.d("TrailTrackingService onDestroy()", "client null; exiting");
-        }else {
+        } else {
             if (client.isConnected()) {
                 client.removeLocationUpdates(this);
             }
@@ -162,12 +162,12 @@ public class TrailTrackingService extends Service implements
     private class StarterIntermediary implements LocationIntermediary {
         byte numPoints = 0;
         private Location lastLoc;
-        public StarterIntermediary(){
-
+        public StarterIntermediary() {
         }
+
         @Override
         public void onLocationChanged(Location loc) {
-                if(lastLoc!= null && (loc.getAccuracy()<5 || numPoints>7)){
+                if (lastLoc != null && (loc.getAccuracy() < 5 || numPoints > 5)){
                     startTime = Calendar.getInstance().getTimeInMillis();
                     lastTime = startTime;
                     firstLat = loc.getLatitude();
@@ -279,7 +279,6 @@ public class TrailTrackingService extends Service implements
         values.put(COLUMN_TIME, Calendar.getInstance().getTimeInMillis());
         lastLocId = writableDatabase.insert(TABLE_LOCATIONS, null, values);//TODO this was null
     }
-
 
     public class TTBinder extends Binder {
         public void setLocationListener(MainActivity activity){

@@ -52,7 +52,9 @@ import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
  * Created by Brian Murphy on 5/4/2014.
  */
 public class TrackTrailFragment extends Fragment implements
-        MapDetailsDialogFragment.MapDetailsChangeListener, EnableLocationDialogFragment.OnGPSCancelListener{
+        MapDetailsDialogFragment.MapDetailsChangeListener,
+
+        EnableLocationDialogFragment.OnGPSCancelListener {
 
     static final int GPS_REQUEST_CODE = 16512;
     static final int WAYPOINT_REQUEST_CODE = 36585;
@@ -101,7 +103,7 @@ public class TrackTrailFragment extends Fragment implements
             .commit();
         dashboardFragment = new DashboardFragment();
         getActivity().getFragmentManager().beginTransaction()
-                .add(R.id.dashboardFragmentWindow,dashboardFragment)
+                .add(R.id.dashboardFragmentWindow, dashboardFragment)
                 .commit();
         if(TrailTrackingService.getStarted()){
             MainActivity activity = (MainActivity)getActivity();
@@ -184,44 +186,44 @@ public class TrackTrailFragment extends Fragment implements
         Log.d("TrackTrailFragment onOptionsItemSelected()","called");
         MainActivity mainActivity = (MainActivity)getActivity();
         switch (item.getItemId()) {
-            case R.id.action_start_tracking:
+            case R.id.action_start_tracking :
                 waypoints = new ArrayList<Waypoint>();
                 waypointMarkers = new ArrayList<Marker>();
                 stopMarkers = new ArrayList<Marker>();
                 setActionBarTracking();
                 //Bind location service//
-                Log.d("TrackTrailFragment onOptionsItemSelected()","binding to Tracking service");
+                Log.d("TrackTrailFragment onOptionsItemSelected()", "binding to Tracking service");
                 mainActivity.bindToLocationService();
 
-                Log.d("TrackTrailFragment onOptionsItemSelected()","binding to dbService");
+                Log.d("TrackTrailFragment onOptionsItemSelected()", "binding to dbService");
                 if(sqLiteHelper == null){
-                    sqLiteHelper = ((MyApplication)getActivity().getApplication()).getDatabaseHelper();
+                    sqLiteHelper = ((MyApplication) getActivity().getApplication()).getDatabaseHelper();
                 }
 
                 findingLocProgressDialog = new ProgressDialog(getActivity());
                 findingLocProgressDialog.setTitle("Finding Location");
-                findingLocProgressDialog.setMessage("If this takes more than ten seconds, you should make sure "+
+                findingLocProgressDialog.setMessage("If this takes more than ten seconds, you should make sure " +
                                                     "there is no interference (buildings or other large structures).");
                 findingLocProgressDialog.show();
                 break;
-            case R.id.action_stop_tracking:
+            case R.id.action_stop_tracking :
                 setActionBarNotTracking();
                 Log.d("TrackTrailFragment onOptionsItemSelected()", "unbound from locationService");
                 mainActivity.binder.stopTracking();
                 //Editing map details//
-                Log.d("TrackTrailFragment onOptionsItemSelected()","about to show map details Dialog");
+                Log.d("TrackTrailFragment onOptionsItemSelected()", "about to show map details Dialog");
                 MapDetailsDialogFragment detailsDialogFragment = MapDetailsDialogFragment.instanceOf(
-                        MapDetailsDialogFragment.MODE_FINISH_TRACKING,mainActivity.binder.getMapId()
-                        ,this);
-                detailsDialogFragment.show(getFragmentManager(),"editingMapDetails");
+                        MapDetailsDialogFragment.MODE_FINISH_TRACKING, mainActivity.binder.getMapId(),
+                        this);
+                detailsDialogFragment.show(getFragmentManager(), "editingMapDetails");
 
                 mainActivity.unbindFromLocationService();
                 break;
             case R.id.action_add_landmark:
-                Intent wpIntent = new Intent(mainActivity,WaypointActivity.class);
-                wpIntent.putExtra(WaypointActivity.KEY_MAP_ID,mainActivity.binder.getMapId());
-                wpIntent.putExtra(WaypointActivity.KEY_LOCATION_ID,lastLocationId);
-                Log.d("onOptionsItemSelected()","starting wp activity for result");
+                Intent wpIntent = new Intent(mainActivity, WaypointActivity.class);
+                wpIntent.putExtra(WaypointActivity.KEY_MAP_ID, mainActivity.binder.getMapId());
+                wpIntent.putExtra(WaypointActivity.KEY_LOCATION_ID, lastLocationId);
+                Log.d("onOptionsItemSelected()", "starting wp activity for result");
                 mainActivity.startActivityForResult(wpIntent, WAYPOINT_REQUEST_CODE);
                 break;
         }
@@ -239,40 +241,40 @@ public class TrackTrailFragment extends Fragment implements
                 initializeMap();
             }
         }else{
-            EnableLocationDialogFragment.newInstance(this).show(getFragmentManager(),"gpsEnableDialog");
+            EnableLocationDialogFragment.newInstance(this).show(getFragmentManager(), "gpsEnableDialog");
         }
         drawWaypoints();
         drawStops();
     }
 
-    private void initializeMap(){
+    private void initializeMap() {
         Log.d("TrackTrailFrag initializeMap()", "called");
         writableDatabase = sqLiteHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME,"temp");
+        values.put(COLUMN_NAME, "temp");
         values.put(COLUMN_START_TIME, Calendar.getInstance().getTimeInMillis());
         values.put(COLUMN_END_TIME, 0);
-        values.put(COLUMN_AVERAGE_SPEED,0);
-        values.put(COLUMN_TOTAL_DISTANCE,-1);
-        values.put(COLUMN_MAXIMUM_SPEED,0);
-        values.put(COLUMN_LINEAR_DISTANCE,0);
+        values.put(COLUMN_AVERAGE_SPEED, 0);
+        values.put(COLUMN_TOTAL_DISTANCE, -1);
+        values.put(COLUMN_MAXIMUM_SPEED, 0);
+        values.put(COLUMN_LINEAR_DISTANCE, 0);
         values.put(COLUMN_NOTES, "...");
         values.put(COLUMN_MAX_ALTITUDE, 0);
         values.put(COLUMN_MIN_ALTITUDE, 0);
         values.put(COLUMN_START_ALTITUDE, 0);
         values.put(COLUMN_END_ALTITUDE, 0);
-        long mapId = writableDatabase.insert(TABLE_MAPS,null,values);
-        Intent trackingIntent = new Intent(getActivity(),TrailTrackingService.class);
-        trackingIntent.putExtra(TrailTrackingService.KEY_MAP_ID,mapId);
+        long mapId = writableDatabase.insert(TABLE_MAPS, null, values);
+        Intent trackingIntent = new Intent(getActivity(), TrailTrackingService.class);
+        trackingIntent.putExtra(TrailTrackingService.KEY_MAP_ID, mapId);
         Log.d("TrackTrailFrag initializeMap()", "STARTING LOCATION SERVICE");
         getActivity().startService(trackingIntent);
     }
 
     @Override
-    public void onGPSCancel(){
+    public void onGPSCancel() {
         Log.d("TrackTrailFrag gpsCancelled()", "called");
-        MainActivity mainActivity = (MainActivity)getActivity();
-        Toast.makeText(mainActivity,"Please enable GPS for tracking",Toast.LENGTH_SHORT).show();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        Toast.makeText(mainActivity, "Please enable GPS for tracking", Toast.LENGTH_SHORT).show();
         setActionBarNotTracking();
         Log.d("TrackTrailFrag gpsCancelled()", "unbind location service");
         mainActivity.unbindFromLocationService();
@@ -281,23 +283,23 @@ public class TrackTrailFragment extends Fragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("TrackTrailFrag onActivityResult()", "called");
-        switch(requestCode){
-            case GPS_REQUEST_CODE:
-                if(((LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE))
+        switch(requestCode) {
+            case GPS_REQUEST_CODE :
+                if (((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
                         .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     initializeMap();
-                }else{
+                } else {
                     onGPSCancel();
                 }
                 break;
-            case WAYPOINT_REQUEST_CODE:
-                if(resultCode == Activity.RESULT_OK){
+            case WAYPOINT_REQUEST_CODE :
+                if (resultCode == Activity.RESULT_OK) {
                     Log.d("onActivityResult()", "adding wp");
-                    if(waypointMarkers ==null){
+                    if (waypointMarkers == null) {
                         waypointMarkers = new ArrayList<Marker>();
                     }
                     Waypoint wp = Waypoint.instanceOf(sqLiteHelper,
-                            data.getLongExtra(WaypointActivity.KEY_WP_ID,-1));
+                            data.getLongExtra(WaypointActivity.KEY_WP_ID, -1));
                     waypointMarkers.add(mapFragment.getMap().addMarker(wp.getMarker()));
                     waypoints.add(wp);
                 }
@@ -308,8 +310,8 @@ public class TrackTrailFragment extends Fragment implements
     public void onDestroyView() {
         Log.d("TrackTrailFrag onDestroyView()", "called");
         super.onDestroyView();
-        MainActivity activity = (MainActivity)getActivity();
-        if(activity.isBoundToLocationService()) {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity.isBoundToLocationService()) {
             Log.d("TrackTrailFrag onDestroyView()", "unbindLocationService");
             activity.unbindFromLocationService();
         }
@@ -321,60 +323,59 @@ public class TrackTrailFragment extends Fragment implements
                     .remove(dashboardFragment)
                     .commitAllowingStateLoss();
         }
-        catch(IllegalStateException e){
-            Log.e("destroying Fragment","activity already destroyed");
+        catch (IllegalStateException e) {
+            Log.e("destroying Fragment", "activity already destroyed");
         }
     }
 
     public void onLocationChanged(Location location, ArrayList<LatLng> coordinatesList, long lastLocID) {
-        if(findingLocProgressDialog.isShowing()){
+        if (findingLocProgressDialog.isShowing()) {
             findingLocProgressDialog.dismiss();
-            Toast.makeText(getActivity(),"Location Found!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Location Found!", Toast.LENGTH_SHORT).show();
         }
-        if(coordinatesList == null){
+        if (coordinatesList == null) {
             return;
         }
-        lastLocationId=lastLocID;
+        lastLocationId = lastLocID;
         float[] distanceFromLast = {0f};
-        if(coordinatesList.size()!=0){
-            LatLng last = coordinatesList.get(coordinatesList.size()-1);
+        if (coordinatesList.size() != 0) {
+            LatLng last = coordinatesList.get(coordinatesList.size() - 1);
             Location.distanceBetween(last.latitude,last.longitude,
-                    location.getLatitude(),location.getLongitude(),distanceFromLast);
+                    location.getLatitude(), location.getLongitude(), distanceFromLast);
         }
         totalDistance += distanceFromLast[0];
-        dashboardFragment.setStats(location.getTime()-lastTime,totalDistance,location.getSpeed(),
+        dashboardFragment.setStats(location.getTime() - lastTime, totalDistance, location.getSpeed(),
                 location.getAltitude());
         lastTime = location.getTime();
-        if(polyline == null) {
+        if (polyline == null) {
             PolylineOptions polylineOptions = new PolylineOptions()
                     .addAll(coordinatesList);
             polyline = mapFragment.getMap().addPolyline(polylineOptions);
-        }else{
+        } else {
             polyline.setPoints(coordinatesList);
         }
         mapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(
-                coordinatesList.get(coordinatesList.size()-1),
-                30f));//TODO attribute to settings
+                coordinatesList.get(coordinatesList.size() - 1), 30f));//TODO attribute to settings
     }
 
-    public void onStop(Location loc){
+    public void onStop(Location loc) {
         MarkerOptions stopOptions = new MarkerOptions();
         stopOptions.title("Stop")
-                .position(new LatLng(loc.getLatitude(),loc.getLongitude()));
+                .position(new LatLng(loc.getLatitude(), loc.getLongitude()));
         stopMarkers.add(mapFragment.getMap().addMarker(stopOptions));
     }
-    public void onResumeMoving(long stopId){
-        Marker lastMarker = stopMarkers.get(stopMarkers.size()-1);
-        Stop stp = Stop.instanceOf(sqLiteHelper,stopId);
-        int startTime = (int)stp.getStartLocation().getTime();
-        int endTime = (int)stp.getEndLocation().getTime();
-        int span = endTime-startTime;
+    public void onResumeMoving(long stopId) {
+        Marker lastMarker = stopMarkers.get(stopMarkers.size() - 1);
+        Stop stp = Stop.instanceOf(sqLiteHelper, stopId);
+        int startTime = (int) stp.getStartLocation().getTime();
+        int endTime = (int) stp.getEndLocation().getTime();
+        int span = endTime - startTime;
         StringBuilder snippet = new StringBuilder("Stopped for ");
-        byte mins = (byte)(span/60);
-        snippet.append(mins ==0 ? "00" : mins);
+        byte mins = (byte) (span / 60);
+        snippet.append(mins == 0 ? "00" : mins);
         snippet.append(":");
-        String secs = ""+(span%60);
-        snippet.append(secs.length()==1 ? "0"+secs : secs);
+        String secs = "" + (span % 60);
+        snippet.append(secs.length() == 1 ? "0" + secs : secs);
         lastMarker.setSnippet(snippet.toString());
     }
 
