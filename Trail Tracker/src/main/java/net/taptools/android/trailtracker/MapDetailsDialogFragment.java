@@ -59,22 +59,22 @@ public class MapDetailsDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = MapDetailsDialogFragment.this.getArguments();
-        final long mapId = args.getLong(TrailTrackingService.KEY_MAP_ID,-1);
-        String mode = args.getString(KEY_MODE,MODE_RESULTS_EDIT);
+        final long mapId = args.getLong(TrailTrackingService.KEY_MAP_ID, -1);
+        String mode = args.getString(KEY_MODE, MODE_RESULTS_EDIT);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View layout = inflater.inflate(R.layout.dialog_map_details, null);
-        nameEditText = (EditText)layout.findViewById(R.id.mapNameEditText);
-        notesEditText = (EditText)layout.findViewById(R.id.notesEditText);
+        nameEditText = (EditText) layout.findViewById(R.id.mapNameEditText);
+        notesEditText = (EditText) layout.findViewById(R.id.notesEditText);
         builder.setView(layout);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 listener.onSaveNewDetails();
                 ContentValues values = new ContentValues();
-                values.put(COLUMN_NAME,nameEditText.getText().toString());
-                values.put(COLUMN_NOTES,notesEditText.getText().toString());
-                writableDatabase.update(TABLE_MAPS,values,COLUMN_ID+" = "+mapId,null);
+                values.put(COLUMN_NAME, nameEditText.getText().toString());
+                values.put(COLUMN_NOTES, notesEditText.getText().toString());
+                writableDatabase.update(TABLE_MAPS, values, COLUMN_ID + " = " + mapId, null);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

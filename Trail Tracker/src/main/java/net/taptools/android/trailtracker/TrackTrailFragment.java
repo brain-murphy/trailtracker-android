@@ -65,7 +65,7 @@ public class TrackTrailFragment extends Fragment implements
     private long lastTime;
     private float totalDistance;
     private Polyline polyline;
-    private long lastLocationId;
+    private long lastLocationId = -1;
     private ArrayList<Waypoint> waypoints;
     private ArrayList<Marker> waypointMarkers;
     private ArrayList<Marker> stopMarkers;
@@ -183,8 +183,8 @@ public class TrackTrailFragment extends Fragment implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("TrackTrailFragment onOptionsItemSelected()","called");
-        MainActivity mainActivity = (MainActivity)getActivity();
+        Log.d("TrackTrailFragment onOptionsItemSelected()", "called");
+        final MainActivity mainActivity = (MainActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.action_start_tracking :
                 waypoints = new ArrayList<Waypoint>();
@@ -199,15 +199,10 @@ public class TrackTrailFragment extends Fragment implements
                 if(sqLiteHelper == null){
                     sqLiteHelper = ((MyApplication) getActivity().getApplication()).getDatabaseHelper();
                 }
-
-                findingLocProgressDialog = new ProgressDialog(getActivity());
-                findingLocProgressDialog.setTitle("Finding Location");
-                findingLocProgressDialog.setMessage("If this takes more than ten seconds, you should make sure " +
-                                                    "there is no interference (buildings or other large structures).");
-                findingLocProgressDialog.show();
                 break;
             case R.id.action_stop_tracking :
                 setActionBarNotTracking();
+                lastLocationId = -1;
                 Log.d("TrackTrailFragment onOptionsItemSelected()", "unbound from locationService");
                 mainActivity.binder.stopTracking();
                 //Editing map details//
@@ -231,9 +226,6 @@ public class TrackTrailFragment extends Fragment implements
     }
 
     public void onLocationServiceBound(){
-        startTracking();
-    }
-    private void startTracking() {
         if(((LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE))
                 .isProviderEnabled(LocationManager.GPS_PROVIDER)){
             if(!TrailTrackingService.getStarted()){
@@ -249,6 +241,26 @@ public class TrackTrailFragment extends Fragment implements
 
     private void initializeMap() {
         Log.d("TrackTrailFrag initializeMap()", "called");
+
+        final MainActivity mainActivity = (MainActivity) getActivity();
+        findingLocProgressDialog = new ProgressDialog(mainActivity);
+        findingLocProgressDialog.setTitle("Finding Location");
+        findingLocProgressDialog.setMessage("If this takes more than ten seconds, you should make sure " +
+                "there is no interference (buildings or other large structures).");
+        findingLocProgressDialog.setCanceledOnTouchOutside(false);
+        findingLocProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (lastLocationId < 0) {
+                    setActionBarNotTracking();
+                    mainActivity.binder.cancelTracking();
+                    mainActivity.unbindFromLocationService();
+                    Toast.makeText(getActivity(), "Tracking Canceled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        findingLocProgressDialog.show();
+
         writableDatabase = sqLiteHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, "temp");
@@ -329,6 +341,7 @@ public class TrackTrailFragment extends Fragment implements
     }
 
     public void onLocationChanged(Location location, ArrayList<LatLng> coordinatesList, long lastLocID) {
+        lastLocationId = lastLocID;
         if (findingLocProgressDialog.isShowing()) {
             findingLocProgressDialog.dismiss();
             Toast.makeText(getActivity(), "Location Found!", Toast.LENGTH_SHORT).show();
@@ -336,7 +349,6 @@ public class TrackTrailFragment extends Fragment implements
         if (coordinatesList == null) {
             return;
         }
-        lastLocationId = lastLocID;
         float[] distanceFromLast = {0f};
         if (coordinatesList.size() != 0) {
             LatLng last = coordinatesList.get(coordinatesList.size() - 1);
@@ -364,6 +376,7 @@ public class TrackTrailFragment extends Fragment implements
                 .position(new LatLng(loc.getLatitude(), loc.getLongitude()));
         stopMarkers.add(mapFragment.getMap().addMarker(stopOptions));
     }
+
     public void onResumeMoving(long stopId) {
         Marker lastMarker = stopMarkers.get(stopMarkers.size() - 1);
         Stop stp = Stop.instanceOf(sqLiteHelper, stopId);

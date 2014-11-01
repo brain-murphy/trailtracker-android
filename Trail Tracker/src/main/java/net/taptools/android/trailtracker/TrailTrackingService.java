@@ -119,6 +119,7 @@ public class TrailTrackingService extends Service implements
             startServingLocations();
         databaseHelper = ((MyApplication) getApplication()).getDatabaseHelper();
         writableDatabase = databaseHelper.getWritableDatabase();
+        Log.d("databaseNull", "got writableDatabase:" + (writableDatabase != null));
         locationIntermediary = new StarterIntermediary();
         isStarted = true;
         return flags;
@@ -126,7 +127,6 @@ public class TrailTrackingService extends Service implements
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d("TrailTrackingService#onBind()", "called");
         return binder;
     }
 
@@ -195,8 +195,9 @@ public class TrailTrackingService extends Service implements
         @Override
         public void onLocationChanged(Location location) {
             trail.add(new LatLng(location.getLatitude(), location.getLongitude()));
-            addLocToDB(location);
-
+            if (isStarted) {
+                addLocToDB(location);
+            }
             endAltitude = location.getAltitude();
             lastTime = Calendar.getInstance().getTimeInMillis();
 
@@ -226,28 +227,28 @@ public class TrailTrackingService extends Service implements
             Location.distanceBetween(firstStopPt.latitude,firstStopPt.longitude,mostRecentPt.latitude,
                     mostRecentPt.longitude,results);
 
-            if(results[0]<location.getAccuracy()){
-                if(numStationaryPoints==0){
+            if (results[0] < location.getAccuracy()) {
+                if (numStationaryPoints == 0) {
                     firstStoppedLocID = lastLocId;
                 }
                 numStationaryPoints++;
                 previousLocID  = lastLocId;
-            }else if(isStopped){
+            } else if (isStopped) {
                 ContentValues newVals = new ContentValues();
-                newVals.put(COLUMN_END_LOCATION_ID,previousLocID);
-                writableDatabase.update(TABLE_STOPS,newVals,COLUMN_ID+" = "+stopId,null);
+                newVals.put(COLUMN_END_LOCATION_ID, previousLocID);
+                writableDatabase.update(TABLE_STOPS, newVals, COLUMN_ID + " = " + stopId, null);
                 isStopped = false;
-                numStationaryPoints=0;
+                numStationaryPoints = 0;
                 listener.onResumeMoving(stopId);
             }
 
-            if(numStationaryPoints>3 && !isStopped){
-                isStopped =true;
+            if (numStationaryPoints > 3 && !isStopped) {
+                isStopped = true;
                 ContentValues stopValues = new ContentValues();
-                stopValues.put(COLUMN_START_LOCATION_ID,firstStoppedLocID);
-                stopValues.put(COLUMN_END_LOCATION_ID,lastLocId);
+                stopValues.put(COLUMN_START_LOCATION_ID, firstStoppedLocID);
+                stopValues.put(COLUMN_END_LOCATION_ID, lastLocId);
                 stopValues.put(COLUMN_MAP_ID, mapId);
-                stopId = writableDatabase.insert(TABLE_STOPS,null,stopValues);
+                stopId = writableDatabase.insert(TABLE_STOPS, null, stopValues);
                 listener.onStop(location);
             }
         }
@@ -292,9 +293,7 @@ public class TrailTrackingService extends Service implements
         }
 
         public void stopServingLocations(){
-            if(isServingLocations){
-                TrailTrackingService.this.stopServingLocations();
-            }
+            TrailTrackingService.this.stopServingLocations();
         }
 
         public boolean getTracking(){
@@ -324,16 +323,27 @@ public class TrailTrackingService extends Service implements
             values.put(COLUMN_LINEAR_DISTANCE, results[0]);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(startTime);
-            String nameString = cal.get(Calendar.DAY_OF_MONTH)+"/"+
-                                cal.get(Calendar.MONTH)+" "+
-                                cal.get(Calendar.HOUR_OF_DAY)+":"+
-                                cal.get(Calendar.MINUTE);
+            String nameString = cal.get(Calendar.DAY_OF_MONTH) + "/"
+                                + cal.get(Calendar.MONTH) + " "
+                                + cal.get(Calendar.HOUR_OF_DAY) + ":"
+                                + cal.get(Calendar.MINUTE);
             values.put(COLUMN_NAME, nameString);
-            writableDatabase.update(TABLE_MAPS,values,COLUMN_ID+" = "+mapId,null);
+            writableDatabase.update(TABLE_MAPS, values, COLUMN_ID + " = " + mapId, null);
             writableDatabase.close();
             writableDatabase = null;
             readableDatabase.close();
             readableDatabase = null;
+            stopSelf();
+        }
+
+        public void cancelTracking(){
+            isStarted = false;
+            writableDatabase.delete(TABLE_MAPS, COLUMN_ID + " = " + mapId, null);
+            writableDatabase.delete(TABLE_LOCATIONS, COLUMN_ID + " = " + mapId, null);
+            writableDatabase.delete(TABLE_STOPS, COLUMN_ID + " = " + mapId, null);
+            writableDatabase.delete(TABLE_WAYPOINTS, COLUMN_ID + " = " + mapId, null);
+            writableDatabase.close();
+            writableDatabase = null;
             stopSelf();
         }
     }
