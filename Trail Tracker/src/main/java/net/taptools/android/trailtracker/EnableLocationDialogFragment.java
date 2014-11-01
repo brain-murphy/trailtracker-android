@@ -13,8 +13,6 @@ import android.provider.Settings;
  */
 public class EnableLocationDialogFragment extends DialogFragment{
 
-    static final int GPS_REQUEST_CODE = 16512;
-
     public interface OnGPSCancelListener{
         public void onGPSCancel();
     }
@@ -38,7 +36,7 @@ public class EnableLocationDialogFragment extends DialogFragment{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent gpsSettingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(gpsSettingsIntent, GPS_REQUEST_CODE);
+                        getActivity().startActivityForResult(gpsSettingsIntent, TrackTrailFragment.GPS_REQUEST_CODE);
                     }
                 }
         );
