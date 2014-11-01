@@ -99,7 +99,6 @@ public class ResultsActivity extends Activity {
 
         getFragmentManager().beginTransaction()
                 .add(layout.getId(), MappingFragment.newInstance(maps),"mappingFrag")
-                .addToBackStack("mappingFrag")
                 .commit();
     }
 
