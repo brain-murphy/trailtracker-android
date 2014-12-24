@@ -37,6 +37,11 @@
         <item>High</item>
     </array>
 
+    <array name="unit_systems">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </array>
+
     <string name="title_activity_waypoint">Add Waypoint</string>
     <string name="use_map_text">Use This Map</string>
     <string name="title_activity_chart">ChartActivity</string>
@@ -46,5 +51,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_info">InfoActivity</string>
     <string name="title_activity_results">" delete"</string>
+    <string name="unitskey">unitsSystem</string>
 
 </resources>

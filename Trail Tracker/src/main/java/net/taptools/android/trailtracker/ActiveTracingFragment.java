@@ -92,7 +92,7 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
         GoogleMap map = mapFragment.getMap();
         map.clear();
 
-        map.addPolyline(mapData.getNewPolyline());
+        map.addPolyline(Map.toNewPolyline(mapData.getCheckpoints()));
         for(int waypointIndex = 0; waypointIndex<mapData.getWaypoints().length;waypointIndex++){
             map.addMarker(mapData.getWaypoints()[waypointIndex].getMarker());
         }

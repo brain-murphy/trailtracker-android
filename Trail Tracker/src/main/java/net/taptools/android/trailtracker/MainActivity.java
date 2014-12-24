@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity
     private static final String TAG_RESULTS_FRAGMENT = "results";
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-//TODO get Google Play Services checking code from sample code
+     //TODO get Google Play Services checking code from sample code
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */

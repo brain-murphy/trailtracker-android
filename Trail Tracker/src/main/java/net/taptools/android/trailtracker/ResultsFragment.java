@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,10 +31,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
@@ -148,7 +155,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                 activeMaps.add(mapData);
 
                 GoogleMap map = mapFragment.getMap();
-                PolylineOptions line = mapData.getNewPolyline();
+                PolylineOptions line = Map.toNewPolyline(mapData.getCheckpoints());
                 //set a (unique) color. (Only five colors)//
                 line.color(getAColor());
                 polylines.put(mapData, map.addPolyline(line));
@@ -242,8 +249,15 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                 }
                 break;
             case R.id.action_share:
-                if (activeMaps.size() == 1) {
-
+                try {
+                    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                            .newDocument();
+                    for (Map map : activeMaps) {
+                        doc.appendChild(map.getKMLElement(doc));
+                    }
+                    Log.d("xml", doc.toString());
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
                 }
         }
         return true;
@@ -289,7 +303,6 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                                         .getDatabaseHelper());
                                 parent.new ReadFromDBTask<Void, Void, Void>().execute();
                             }
-
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
