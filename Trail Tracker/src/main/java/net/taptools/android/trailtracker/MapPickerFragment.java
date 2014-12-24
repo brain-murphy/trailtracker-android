@@ -141,7 +141,7 @@ public class MapPickerFragment extends Fragment {
                 Map mapData = Map.instanceOf(databaseHelper,(int)id);
                 GoogleMap map = mapFrag.getMap();
                 map.clear();
-                map.addPolyline(mapData.getNewPolyline());
+                map.addPolyline(Map.toNewPolyline(mapData.getCheckpoints()));
 
                 for(Waypoint wp : mapData.getWaypoints()){
                     map.addMarker(wp.getMarker());

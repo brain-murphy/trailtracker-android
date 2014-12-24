@@ -156,7 +156,7 @@ public class MappingFragment extends ResultsSubFragment {
         for (Map mapDatum : activeMaps) {
             mapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(
                     mapDatum.getLocations()[0].toLatLng(), 30f));
-            mapFragment.getMap().addPolyline(mapDatum.getNewPolyline());
+            mapFragment.getMap().addPolyline(Map.toNewPolyline(mapDatum.getCheckpoints()));
             for (Stop stop : mapDatum.getStops()) {
                 mapFragment.getMap().addMarker(stop.getMarker());
             }

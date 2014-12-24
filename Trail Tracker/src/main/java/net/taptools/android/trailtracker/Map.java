@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
@@ -36,6 +37,7 @@ public class Map {
     private Waypoint[] waypoints;
     private Stop[] stops;
 
+    private TTLocation[] checkpoints;
 
     private Map() {
     }
@@ -75,9 +77,9 @@ public class Map {
         db.delete(TABLE_MAPS,COLUMN_ID+" = "+id, null);
     }
 
-    public PolylineOptions getNewPolyline(){//TODO anti aliasing of line. Account for stops
+    public static PolylineOptions toNewPolyline(TTLocation[] locations){
         PolylineOptions options = new PolylineOptions();
-        for(int pointIndex = 0; pointIndex<locations.length;pointIndex++){
+        for(int pointIndex = 0; pointIndex < locations.length; pointIndex++){
             options.add(locations[pointIndex].toLatLng());
         }
         return options;
@@ -167,8 +169,9 @@ public class Map {
 
     @Override
     public int hashCode() {
-        return Integer.toString(id).hashCode();
+        return id;
     }
+
 
     public int getId() {
         return id;
@@ -212,6 +215,36 @@ public class Map {
 
     public TTLocation[] getLocations() {
         return locations;
+    }
+
+    public TTLocation[] getCheckpoints() {
+        if (checkpoints == null) {
+            ArrayList<TTLocation> locationList = new ArrayList<TTLocation>(locations.length / 2);
+            TTLocation lastAdded = locations[0];
+            locationList.add(lastAdded);
+            double lastBearing = 0.0;
+            if (locations[1] != null) {
+                lastBearing = lastAdded.bearingHere(locations[1].getLongitude(),
+                        locations[1].getLatitude());
+            }
+            for (int i = 1; i < locations.length; i++) {
+                double thisBearing = lastAdded.bearingHere(locations[i].getLongitude(),
+                        locations[i].getLatitude());
+                if (Math.abs(thisBearing - lastBearing) > 15
+                        || lastAdded.distanceTo(locations[i].getLongitude(),
+                        locations[i].getLatitude()) > 40) {
+//TODO left off here with issues.
+
+                    lastAdded = locations[i];
+                    locationList.add(lastAdded);
+                }
+                lastBearing = thisBearing;
+            }
+            TTLocation[] result = new TTLocation[locationList.size()];
+            locationList.toArray(result);
+            return result;
+        }
+        return checkpoints;
     }
 
     public Waypoint[] getWaypoints() {

@@ -5,4 +5,13 @@
         android:key="@string/key_latency"
         android:entries="@array/power_settings">
     </MultiSelectListPreference>
+
+    <MultiSelectListPreference android:title="Units"
+        android:summary="What units system would you like to use"
+        android:key="@string/unitskey"
+        android:entries="@array/unit_systems">
+    </MultiSelectListPreference>
+
+    
+
 </PreferenceScreen>
