@@ -166,12 +166,12 @@ public class Map {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Map && ((Map) other).getId() == this.id;
+        return (other != null) && (other instanceof Map) && ((Map) other).getId() == getId();
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return getId();
     }
 
 

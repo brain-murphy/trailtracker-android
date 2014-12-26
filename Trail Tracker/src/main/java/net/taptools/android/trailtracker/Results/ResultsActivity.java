@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 
+import net.taptools.android.trailtracker.ConfirmDeleteDialogFragment;
 import net.taptools.android.trailtracker.Models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.PickMapDialogFragment;
@@ -45,7 +45,7 @@ import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.COLUMN_ID;
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.COLUMN_NAME;
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.TABLE_MAPS;
 
-public class ResultsActivity extends Activity {
+public class ResultsActivity extends Activity implements ConfirmDeleteDialogFragment.OnMapDeletedListener {
 
     public static final String KEY_MAP_IDS = "mapidskey";
 
@@ -231,41 +231,78 @@ public class ResultsActivity extends Activity {
             final ArrayList<Map> maps = frag.getActiveMaps();
 
             //pick map to rename//
-            PickMapDialogFragment picker = PickMapDialogFragment.newInstance(maps, new PickMapDialogFragment.MapPickListener() {
-                //behavior for when map is chosen//
-                @Override
-                public void onMapChosen(int id) {
-                    //find map that matches id returned//
-                    for (final Map map: maps) {
-                        if (map.getId() == id) {
-                            //launch rename dialog//
-                            RenameDialogFragment.newInstance(map.getName(), new RenameDialogFragment.RenameListener() {
-                                //update database entry//
-                                @Override
-                                public void onRename(String newName) {
+            if (maps.size() > 1) {
+                PickMapDialogFragment picker = PickMapDialogFragment.newInstance(maps, new PickMapDialogFragment.MapPickListener() {
+                    //behavior for when map is chosen//
+                    @Override
+                    public void onMapChosen(int id) {
+                        //find map that matches id returned//
+                        for (final Map map : maps) {
+                            if (map.getId() == id) {
+                                //launch rename dialog//
+                                RenameDialogFragment.newInstance(map.getName(), new RenameDialogFragment.RenameListener() {
+                                    //update database entry//
+                                    @Override
+                                    public void onRename(String newName) {
 
-                                    ContentValues values = new ContentValues();
-                                    values.put(COLUMN_NAME, newName);
-                                    SQLiteDatabase db = ((MyApplication) getApplication()).getDatabaseHelper()
-                                            .getWritableDatabase();
-                                    db.update(TABLE_MAPS, values, COLUMN_ID + " = " + map.getId(), null);
-                                    FragmentManager fm = getFragmentManager();
+                                        ContentValues values = new ContentValues();
+                                        values.put(COLUMN_NAME, newName);
+                                        SQLiteDatabase db = ((MyApplication) getApplication()).getDatabaseHelper()
+                                                .getWritableDatabase();
+                                        db.update(TABLE_MAPS, values, COLUMN_ID + " = " + map.getId(), null);
+                                        FragmentManager fm = getFragmentManager();
 
-                                    //close activity for now//
-                                    while (fm.getBackStackEntryCount() > 0) {
-                                        fm.popBackStack();
+                                        //close activity for now//
+                                        while (fm.getBackStackEntryCount() > 0) {
+                                            fm.popBackStack();
+                                        }
+                                        finish();
                                     }
-                                    finish();
-                                }
-                            }).show(getFragmentManager(), "renamer");
+                                }).show(getFragmentManager(), "renamer");
+                            }
                         }
                     }
-                }
-            });
-            picker.setCancelable(true);
-            picker.show(getFragmentManager(), "picker");
+                });
+                picker.setCancelable(true);
+                picker.show(getFragmentManager(), "picker");
+            } else {
+                //rename single map//
+                RenameDialogFragment.newInstance(maps.get(0).getName(), new RenameDialogFragment.RenameListener() {
+                    //update database entry//
+                    @Override
+                    public void onRename(String newName) {
+
+                        ContentValues values = new ContentValues();
+                        values.put(COLUMN_NAME, newName);
+                        SQLiteDatabase db = ((MyApplication) getApplication()).getDatabaseHelper()
+                                .getWritableDatabase();
+                        db.update(TABLE_MAPS, values, COLUMN_ID + " = " + maps.get(0).getId(), null);
+                        FragmentManager fm = getFragmentManager();
+
+                        //close activity for now//
+                        while (fm.getBackStackEntryCount() > 0) {
+                            fm.popBackStack();
+                        }
+                        finish();
+                    }
+                }).show(getFragmentManager(), "renamer");
+            }
+        } else if (id == R.id.action_delete) {
+            ArrayList<Map> maps = ((ResultsSubFragment) getFragmentManager()
+                    .findFragmentByTag(TAGS_SEQUENCED[viewState]))
+                    .getActiveMaps();
+            ConfirmDeleteDialogFragment.newInstance(maps, this).show(getFragmentManager(), "delFrag");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMapDeleted() {
+        FragmentManager fm = getFragmentManager();
+        while (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+        }
+        finish();
     }
 }
