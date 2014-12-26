@@ -1,28 +1,15 @@
 package net.taptools.android.trailtracker;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
@@ -31,6 +18,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.Results.ResultsFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;

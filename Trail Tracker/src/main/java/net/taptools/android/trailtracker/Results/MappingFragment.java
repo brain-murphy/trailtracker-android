@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Results;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,14 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapFragment;
+
+import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.R;
+import net.taptools.android.trailtracker.Models.Stop;
+import net.taptools.android.trailtracker.Models.Waypoint;
 
 import java.util.ArrayList;
 

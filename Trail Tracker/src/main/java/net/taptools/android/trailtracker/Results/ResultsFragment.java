@@ -1,12 +1,8 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Results;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,6 +27,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import net.taptools.android.trailtracker.CheckableExpandableListAdapter;
+import net.taptools.android.trailtracker.ConfirmDeleteDialogFragment;
+import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.MyApplication;
+import net.taptools.android.trailtracker.R;
+import net.taptools.android.trailtracker.RenameDialogFragment;
+import net.taptools.android.trailtracker.Models.Stop;
+import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
+import net.taptools.android.trailtracker.Models.Waypoint;
+
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -38,21 +44,22 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
 
-public class ResultsFragment extends Fragment implements RenameDialogFragment.RenameListener {
+public class ResultsFragment extends Fragment implements RenameDialogFragment.RenameListener,
+        ConfirmDeleteDialogFragment.OnMapDeletedListener {
+
+    //TODO test deletion ConcurrentModificationException
 
     private ArrayList<Map> activeMaps = new ArrayList<Map>();
 
     private volatile ArrayList<String> groupNames;
     private volatile LinkedHashMap<String, ArrayList<String>> mapGroups;
     private volatile ArrayList<Integer> mapIds;
-    private ExpandableListView expandableListView;
     private CheckableExpandableListAdapter listAdapter;
 
     private TTSQLiteOpenHelper databaseHelper;
@@ -94,6 +101,12 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         markers = new HashMap<Map, ArrayList<Marker>>();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        onMapDeleted();
+    }
+
     /**
      * Creates view by:
      * -inflating layout
@@ -116,7 +129,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
 
         listAdapter = new CheckableExpandableListAdapter(
                 getActivity(), groupNames, mapGroups, mapIds);
-        expandableListView = (ExpandableListView) root.findViewById(R.id.expandableListView);
+        ExpandableListView expandableListView = (ExpandableListView) root.findViewById(R.id.expandableListView);
         expandableListView.setAdapter(listAdapter);
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -235,7 +248,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         switch (item.getItemId()) {
             case R.id.action_delete:
                 if (activeMaps.size() > 0) {
-                    new ConfirmDeleteDialogFragment().show(getFragmentManager(), "deleteMapFrag");
+                    ConfirmDeleteDialogFragment.newInstance(activeMaps, this)
+                            .show(getFragmentManager(), "deleteMapFrag");
                 } else {
                     Toast.makeText(getActivity(), "Select at least one map", Toast.LENGTH_SHORT).show();
                 }
@@ -278,39 +292,40 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         new ReadFromDBTask<Void, Void, Void>().execute();
     }
 
-    public static class ConfirmDeleteDialogFragment extends DialogFragment {
-
-        ArrayList<Map> activeMaps;
-        ResultsFragment parent;
-
-        public static ConfirmDeleteDialogFragment newInstance(ArrayList<Map> activeMaps,
-                                                              ResultsFragment parent) {
-            ConfirmDeleteDialogFragment frag = new ConfirmDeleteDialogFragment();
-            frag.activeMaps = activeMaps;
-            frag.parent = parent;
-            return frag;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Are you sure you want to delete map(s)")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            for (Map map : activeMaps) {
-                                map.delete(((MyApplication) getActivity().getApplication())
-                                        .getDatabaseHelper());
-                                parent.new ReadFromDBTask<Void, Void, Void>().execute();
-                            }
+    @Override
+    public void onMapDeleted() {
+        new ReadFromDBTask<Void, Void, Void>(){
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                //find whether activeMaps contains more maps than are currently in the list (after deletion)//
+                for (int i = 0; i < activeMaps.size(); i++) {
+                    Map activeMap = activeMaps.get(0);
+                    boolean found = false;
+                    for (int readId : mapIds) {
+                        if (readId == activeMap.getId()) {
+                            found = true;
+                            break;
                         }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                    }
+                    //remove from map and data structures//
+                    if (!found) {
+                        //remove markers from map//
+                        for (Marker mark : markers.get(activeMap)) {
+                            mark.remove();
                         }
-                    });
-            return builder.create();
-        }
+                        //remove marker arraylist from marker hashmap//
+                        markers.remove(activeMap);
+                        //remove polyline//
+                        polylines.get(activeMap).remove();
+                        polylines.remove(activeMap);
+
+                        activeMaps.remove(activeMap);
+                    }
+                }
+            }
+        }.execute();
+
     }
 
     /**

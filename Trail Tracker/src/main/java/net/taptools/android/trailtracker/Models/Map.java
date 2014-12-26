@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -164,12 +166,12 @@ public class Map {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Map && ((Map) other).getId() == this.id;
+        return (other != null) && (other instanceof Map) && ((Map) other).getId() == getId();
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return getId();
     }
 
 
