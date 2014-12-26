@@ -31,6 +31,8 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
+import net.taptools.android.trailtracker.Results.ResultsFragment;
+
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity
@@ -147,8 +149,6 @@ public class MainActivity extends ActionBarActivity
                     .add(R.id.container, activeFragment)
                     .commit();
         }
-
-
     }
 
     public boolean isGooglePlayServicesAvailable(){

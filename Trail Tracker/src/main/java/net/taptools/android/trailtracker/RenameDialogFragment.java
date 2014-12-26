@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -54,7 +55,7 @@ public class RenameDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final TextView textView = new TextView(getActivity());
+        final EditText textView = new EditText(getActivity());
         textView.setText(getArguments().getString(ARG_TITLE));
         return new AlertDialog.Builder(getActivity())
                 .setIcon(R.drawable.ic_action_edit)

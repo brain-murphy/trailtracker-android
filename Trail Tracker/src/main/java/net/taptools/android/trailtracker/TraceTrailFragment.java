@@ -1,15 +1,7 @@
 package net.taptools.android.trailtracker;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,10 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
+import net.taptools.android.trailtracker.Models.Map;
 
 
 public class TraceTrailFragment extends Fragment implements MapPickerFragment.MapPickListener, EnableLocationDialogFragment.OnGPSCancelListener {

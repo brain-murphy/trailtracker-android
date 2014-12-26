@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Results;
 
 import android.os.Bundle;
 import android.app.Fragment;
@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.R;
+import net.taptools.android.trailtracker.Models.TTLocation;
 
 import java.util.ArrayList;
 import java.util.Calendar;

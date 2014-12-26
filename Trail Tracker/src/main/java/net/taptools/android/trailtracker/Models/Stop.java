@@ -1,10 +1,12 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 

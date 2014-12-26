@@ -1,14 +1,14 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 /**

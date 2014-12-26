@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.Results;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -31,6 +31,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import net.taptools.android.trailtracker.CheckableExpandableListAdapter;
+import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.MyApplication;
+import net.taptools.android.trailtracker.R;
+import net.taptools.android.trailtracker.RenameDialogFragment;
+import net.taptools.android.trailtracker.Models.Stop;
+import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
+import net.taptools.android.trailtracker.Models.Waypoint;
+
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -38,7 +47,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -52,7 +60,6 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
     private volatile ArrayList<String> groupNames;
     private volatile LinkedHashMap<String, ArrayList<String>> mapGroups;
     private volatile ArrayList<Integer> mapIds;
-    private ExpandableListView expandableListView;
     private CheckableExpandableListAdapter listAdapter;
 
     private TTSQLiteOpenHelper databaseHelper;
@@ -94,6 +101,12 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         markers = new HashMap<Map, ArrayList<Marker>>();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        new ReadFromDBTask<Void, Void, Void>().execute();
+    }
+
     /**
      * Creates view by:
      * -inflating layout
@@ -116,7 +129,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
 
         listAdapter = new CheckableExpandableListAdapter(
                 getActivity(), groupNames, mapGroups, mapIds);
-        expandableListView = (ExpandableListView) root.findViewById(R.id.expandableListView);
+        ExpandableListView expandableListView = (ExpandableListView) root.findViewById(R.id.expandableListView);
         expandableListView.setAdapter(listAdapter);
 
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
