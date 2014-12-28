@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <MultiSelectListPreference android:title="GPS Latency"
+    <ListPreference android:title="GPS Latency"
         android:summary="How often the app should get seek another location update affects power consumption"
         android:key="@string/key_latency"
-        android:entries="@array/power_settings">
-    </MultiSelectListPreference>
+        android:entries="@array/power_settings"
+        android:entryValues="@array/power_settings">
+    </ListPreference>
 
-    <MultiSelectListPreference android:title="Units"
+    <ListPreference android:title="Units"
         android:summary="What units system would you like to use"
-        android:key="@string/unitskey"
-        android:entries="@array/unit_systems">
-    </MultiSelectListPreference>
+        android:key="@string/key_units"
+        android:entries="@array/unit_systems"
+        android:entryValues="@array/unit_systems">
+    </ListPreference>
 
     
 

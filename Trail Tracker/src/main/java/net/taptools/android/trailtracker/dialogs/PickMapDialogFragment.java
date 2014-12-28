@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.dialogs;
 
 
 import android.app.Dialog;
@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import net.taptools.android.trailtracker.Models.Map;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 

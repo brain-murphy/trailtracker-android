@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
 
 
 public class TraceTrailFragment extends Fragment implements MapPickerFragment.MapPickListener, EnableLocationDialogFragment.OnGPSCancelListener {

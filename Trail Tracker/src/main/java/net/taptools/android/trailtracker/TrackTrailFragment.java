@@ -34,6 +34,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import net.taptools.android.trailtracker.Models.Stop;
 import net.taptools.android.trailtracker.Models.Waypoint;
+import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
+import net.taptools.android.trailtracker.dialogs.MapDetailsDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +51,7 @@ public class TrackTrailFragment extends Fragment implements
 
         EnableLocationDialogFragment.OnGPSCancelListener {
 
-    static final int GPS_REQUEST_CODE = 16512;
+    public static final int GPS_REQUEST_CODE = 16512;
     static final int WAYPOINT_REQUEST_CODE = 36585;
 
     private MapFragment mapFragment;

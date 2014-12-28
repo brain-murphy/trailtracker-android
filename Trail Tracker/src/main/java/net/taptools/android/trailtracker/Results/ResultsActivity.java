@@ -12,12 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import net.taptools.android.trailtracker.ConfirmDeleteDialogFragment;
+import net.taptools.android.trailtracker.dialogs.ConfirmDeleteDialogFragment;
 import net.taptools.android.trailtracker.Models.Map;
 import net.taptools.android.trailtracker.MyApplication;
-import net.taptools.android.trailtracker.PickMapDialogFragment;
+import net.taptools.android.trailtracker.dialogs.PickMapDialogFragment;
 import net.taptools.android.trailtracker.R;
-import net.taptools.android.trailtracker.RenameDialogFragment;
+import net.taptools.android.trailtracker.dialogs.RenameDialogFragment;
 import net.taptools.android.trailtracker.SettingsActivity;
 import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 

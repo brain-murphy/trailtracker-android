@@ -52,5 +52,7 @@
     <string name="title_activity_info">InfoActivity</string>
     <string name="title_activity_results">" delete"</string>
     <string name="unitskey">unitsSystem</string>
+    <string name="settings">Settings</string>
+    <string name="key_units">unitskey</string>
 
 </resources>

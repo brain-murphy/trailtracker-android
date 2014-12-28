@@ -14,6 +14,7 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.media.audiofx.BassBoost;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -277,7 +278,7 @@ public class MainActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

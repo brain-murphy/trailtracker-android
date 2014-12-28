@@ -28,11 +28,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import net.taptools.android.trailtracker.CheckableExpandableListAdapter;
-import net.taptools.android.trailtracker.ConfirmDeleteDialogFragment;
+import net.taptools.android.trailtracker.dialogs.ConfirmDeleteDialogFragment;
 import net.taptools.android.trailtracker.Models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.R;
-import net.taptools.android.trailtracker.RenameDialogFragment;
+import net.taptools.android.trailtracker.dialogs.RenameDialogFragment;
 import net.taptools.android.trailtracker.Models.Stop;
 import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 import net.taptools.android.trailtracker.Models.Waypoint;
