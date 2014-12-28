@@ -1,20 +1,19 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
+import net.taptools.android.trailtracker.MyApplication;
+import net.taptools.android.trailtracker.R;
+import net.taptools.android.trailtracker.TrailTrackingService;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 

@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker;
+package net.taptools.android.trailtracker.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import net.taptools.android.trailtracker.Models.Map;
-import net.taptools.android.trailtracker.Results.ResultsFragment;
+import net.taptools.android.trailtracker.MyApplication;
 
 import java.util.ArrayList;
 
