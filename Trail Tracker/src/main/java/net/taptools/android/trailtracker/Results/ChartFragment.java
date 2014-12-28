@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.R;
 
 import org.achartengine.ChartFactory;

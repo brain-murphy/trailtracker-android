@@ -45,7 +45,7 @@
             android:exported="true" >
         </service>
         <activity
-            android:name=".Results.ResultsActivity"
+            android:name=".results.ResultsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_mapping"
             android:parentActivityName=".MainActivity" >

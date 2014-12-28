@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
 
 

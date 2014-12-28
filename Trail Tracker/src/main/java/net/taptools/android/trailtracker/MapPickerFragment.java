@@ -18,9 +18,9 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
-import net.taptools.android.trailtracker.Models.Map;
-import net.taptools.android.trailtracker.Models.Stop;
-import net.taptools.android.trailtracker.Models.Waypoint;
+import net.taptools.android.trailtracker.models.Map;
+import net.taptools.android.trailtracker.models.Stop;
+import net.taptools.android.trailtracker.models.Waypoint;
 
 import java.util.ArrayList;
 import java.util.Calendar;

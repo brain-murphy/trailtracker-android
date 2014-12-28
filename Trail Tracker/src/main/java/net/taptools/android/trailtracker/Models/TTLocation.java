@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Models;
+package net.taptools.android.trailtracker.models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

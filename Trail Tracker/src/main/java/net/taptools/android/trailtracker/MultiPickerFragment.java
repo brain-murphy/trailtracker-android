@@ -19,8 +19,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import net.taptools.android.trailtracker.Models.Map;
-import net.taptools.android.trailtracker.Results.ResultsFragment;
+import net.taptools.android.trailtracker.models.Map;
+import net.taptools.android.trailtracker.results.ResultsFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -32,8 +32,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import net.taptools.android.trailtracker.Models.Stop;
-import net.taptools.android.trailtracker.Models.Waypoint;
+import net.taptools.android.trailtracker.models.Stop;
+import net.taptools.android.trailtracker.models.Waypoint;
 import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
 import net.taptools.android.trailtracker.dialogs.MapDetailsDialogFragment;
 

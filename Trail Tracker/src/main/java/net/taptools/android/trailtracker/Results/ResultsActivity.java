@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import net.taptools.android.trailtracker.dialogs.ConfirmDeleteDialogFragment;
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.dialogs.PickMapDialogFragment;
 import net.taptools.android.trailtracker.R;
