@@ -99,6 +99,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         //allocate hash maps to store reference to map data displayed on GoogleMap//
         polylines = new HashMap<Map, Polyline>();
         markers = new HashMap<Map, ArrayList<Marker>>();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -239,8 +240,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.results, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.results,menu);
     }
 
     @Override

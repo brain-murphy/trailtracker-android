@@ -130,8 +130,6 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lastPosition = -1;
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -142,6 +140,7 @@ public class MainActivity extends ActionBarActivity
         isGooglePlayServicesAvailable();
 
         if (savedInstanceState == null) {
+            lastPosition = 0;
             activeFragment = TrackTrailFragment.newInstance();
             getFragmentManager().beginTransaction()
                     .add(R.id.container, activeFragment)
@@ -228,6 +227,12 @@ public class MainActivity extends ActionBarActivity
                     .commit();
         }
         onSectionAttached(position + 1);
+    }
+
+    public void refreshFragment() {
+        int tempPosition = lastPosition;
+        lastPosition = -100;
+        onNavigationDrawerItemSelected(tempPosition);
     }
 
     public void onSectionAttached(int number) {

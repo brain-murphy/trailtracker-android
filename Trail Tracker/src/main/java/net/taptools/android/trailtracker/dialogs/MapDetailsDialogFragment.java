@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -69,11 +70,11 @@ public class MapDetailsDialogFragment extends DialogFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.onSaveNewDetails();
                 ContentValues values = new ContentValues();
                 values.put(COLUMN_NAME, nameEditText.getText().toString());
                 values.put(COLUMN_NOTES, notesEditText.getText().toString());
                 writableDatabase.update(TABLE_MAPS, values, COLUMN_ID + " = " + mapId, null);
+                listener.onSaveNewDetails();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -86,6 +87,7 @@ public class MapDetailsDialogFragment extends DialogFragment {
             builder.setNeutralButton("Quit Without Saving", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    Log.d("MapDetailsDialogFragment", "QuitWithoutSaving");
                     listener.onQuitWithoutSaving();
                 }
             });

@@ -107,9 +107,14 @@ public class TrackTrailFragment extends Fragment implements
             .add(R.id.mapFragmentWindow, mapFragment)
             .commit();
         dashboardFragment = new DashboardFragment();
-        getActivity().getFragmentManager().beginTransaction()
-                .add(R.id.dashboardFragmentWindow, dashboardFragment)
-                .commit();
+
+        if (PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getBoolean(getString(R.string.key_show_stats_tracking), true)) {
+            getActivity().getFragmentManager().beginTransaction()
+                    .add(R.id.dashboardFragmentWindow, dashboardFragment)
+                    .commit();
+        }
+
         if (TrailTrackingService.getStarted()) {
             MainActivity activity = (MainActivity)getActivity();
             if(!activity.isBoundToLocationService()){
@@ -213,18 +218,13 @@ public class TrackTrailFragment extends Fragment implements
                 }
                 break;
             case R.id.action_stop_tracking :
-                setActionBarNotTracking();
-                lastLocationId = -1;
-                Log.d("TrackTrailFragment onOptionsItemSelected()", "unbound from locationService");
-                mainActivity.binder.stopTracking();
-                //Editing map details//
-                Log.d("TrackTrailFragment onOptionsItemSelected()", "about to show map details Dialog");
+                mainActivity.binder.pauseTracking();
+                dashboardFragment.pauseTimer();
                 MapDetailsDialogFragment detailsDialogFragment = MapDetailsDialogFragment.instanceOf(
                         MapDetailsDialogFragment.MODE_FINISH_TRACKING, mainActivity.binder.getMapId(),
                         this);
                 detailsDialogFragment.show(getFragmentManager(), "editingMapDetails");
-
-                mainActivity.unbindFromLocationService();
+                //cleanup done on callbacks
                 break;
             case R.id.action_add_landmark:
                 Intent wpIntent = new Intent(mainActivity, WaypointActivity.class);
@@ -407,16 +407,27 @@ public class TrackTrailFragment extends Fragment implements
 
     @Override
     public void onCancel() {
-
+        ((MainActivity)getActivity()).binder.resumeTracking();
+        dashboardFragment.resumeTimer();
     }
 
     @Override
     public void onQuitWithoutSaving() {
-
+        MainActivity mainActivity = (MainActivity) getActivity();
+        lastLocationId = -1;
+        mainActivity.binder.stopTracking();
+        mainActivity.unbindFromLocationService();
+        setActionBarNotTracking();
+        mainActivity.refreshFragment();
     }
 
     @Override
     public void onSaveNewDetails() {
-
+        MainActivity mainActivity = (MainActivity) getActivity();
+        lastLocationId = -1;
+        mainActivity.binder.stopTracking();
+        mainActivity.unbindFromLocationService();
+        setActionBarNotTracking();
+        mainActivity.refreshFragment();
     }
 }

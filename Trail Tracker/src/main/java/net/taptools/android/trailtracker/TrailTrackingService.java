@@ -285,6 +285,9 @@ public class TrailTrackingService extends Service implements
     }
 
     public class TTBinder extends Binder {
+
+        private LocationIntermediary pausedIntermediary;
+
         public void setLocationListener(MainActivity activity){
             TrailTrackingService.this.listener = activity;
         }
@@ -337,6 +340,21 @@ public class TrailTrackingService extends Service implements
             readableDatabase.close();
             readableDatabase = null;
             stopSelf();
+        }
+
+        public void pauseTracking() {
+            pausedIntermediary = locationIntermediary;
+            locationIntermediary = new LocationIntermediary() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    //Deliberately do nothing
+                }
+            };
+        }
+
+        public void resumeTracking() {
+            locationIntermediary = pausedIntermediary;
+            pausedIntermediary = null;
         }
 
         public void cancelTracking(){

@@ -31,6 +31,31 @@ public class DashboardFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void pauseTimer() {
+        timer.cancel();
+        timer.purge();
+    }
+
+    public void resumeTimer() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        long second = (time) % 60;
+                        long minute = (time / 60) % 60;
+                        long hour = (time / 3600) % 24;
+
+                        timeTextView.setText(String.format("%02d:%02d:%02d", hour, minute, second));
+                        time++;
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,5 +112,12 @@ public class DashboardFragment extends Fragment {
             speedTextView.setText(String.format("%.2f km/h", speed / 1000 * 3600));
             altitudeTextView.setText(String.format("%.2f m", altitude));
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        timer.cancel();
+        timer.purge();
     }
 }
