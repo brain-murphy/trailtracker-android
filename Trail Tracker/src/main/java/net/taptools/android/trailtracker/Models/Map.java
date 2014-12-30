@@ -156,7 +156,7 @@ public class Map {
         stopsSB.append(loc.getLongitude()).append(",")
                 .append(loc.getLatitude()).append(",")
                 .append(loc.getAccuracy()).append(",")
-                .append(loc.getElevation()).append(",")
+                .append(loc.getAltitude()).append(",")
                 .append(loc.getAccuracy()).append(",")
                 .append(loc.getSpeed()).append(",")
                 .append(loc.getTime()).append(",")

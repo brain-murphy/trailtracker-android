@@ -137,7 +137,7 @@ public class MappingFragment extends ResultsSubFragment {
 //                        float[] alts = new float[locs.length];
 //                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
 //                            times[locIndex] = locs[locIndex].getTime();
-//                            alts[locIndex] = locs[locIndex].getElevation();
+//                            alts[locIndex] = locs[locIndex].getAltitude();
 //                        }
 //                        timeArrays[mapIndex] = times;
 //                        valueArrays[mapIndex] = alts;

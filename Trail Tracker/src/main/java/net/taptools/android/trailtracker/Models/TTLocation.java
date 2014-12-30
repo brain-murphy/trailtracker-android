@@ -2,6 +2,7 @@ package net.taptools.android.trailtracker.models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -35,11 +36,11 @@ public class TTLocation {
     private final float[] mResults = new float[2];
 
 
-    public static final TTLocation instanceOf(TTSQLiteOpenHelper sqLiteOpenHelper, long locId){
+    public static final TTLocation instanceOf(TTSQLiteOpenHelper sqLiteOpenHelper, long locId) {
         TTLocation loc = new TTLocation();
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor crsr = database.query(TABLE_LOCATIONS,ALL_LOCATION_COLUMNS,COLUMN_ID+" = "+locId,
-                null,null,null,null);
+        Cursor crsr = database.query(TABLE_LOCATIONS,ALL_LOCATION_COLUMNS, COLUMN_ID + " = " + locId,
+                null, null, null, null);
         crsr.moveToFirst();
         loc.id = locId;
         loc.longitude = crsr.getFloat(crsr.getColumnIndex(COLUMN_LONGITUDE));
@@ -55,13 +56,13 @@ public class TTLocation {
         return loc;
     }
 
-    public static final TTLocation[] getAll(TTSQLiteOpenHelper sqLiteOpenHelper, long mapId){
+    public static final TTLocation[] getAll(TTSQLiteOpenHelper sqLiteOpenHelper, long mapId) {
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor crsr = database.query(TABLE_LOCATIONS,ALL_LOCATION_COLUMNS,COLUMN_MAP_ID+" = "+mapId,
-                null,null,null,COLUMN_TIME+" ASC");
+        Cursor crsr = database.query(TABLE_LOCATIONS, ALL_LOCATION_COLUMNS, COLUMN_MAP_ID + " = " + mapId,
+                null, null, null, COLUMN_TIME + " ASC");
         crsr.moveToFirst();
         TTLocation[] locs = new TTLocation[crsr.getCount()];
-        for(int locIndex = 0; !crsr.isAfterLast();locIndex++){
+        for (int locIndex = 0; !crsr.isAfterLast(); locIndex++) {
             TTLocation loc = new TTLocation();
             loc.id = crsr.getLong(crsr.getColumnIndex(COLUMN_ID));
             loc.longitude = crsr.getFloat(crsr.getColumnIndex(COLUMN_LONGITUDE));
@@ -73,12 +74,29 @@ public class TTLocation {
             loc.distance = crsr.getFloat(crsr.getColumnIndex(COLUMN_DISTANCE));
             loc.time = crsr.getLong(crsr.getColumnIndex(COLUMN_TIME));
             loc.mapId = crsr.getLong(crsr.getColumnIndex(COLUMN_MAP_ID));
-            locs[locIndex]=loc;
+            locs[locIndex] = loc;
             crsr.moveToNext();
         }
 
         crsr.close();
         return locs;
+    }
+
+    public TTLocation() {
+        //why did I make static instantiators?
+    }
+
+    public TTLocation(Location location, float distance, long time, long id, long mapId) {
+        this.id = id;
+        longitude = (float) location.getLongitude();
+        latitude = (float) location.getLatitude();
+        speed = location.getSpeed();
+        elevation = (float) location.getAltitude();
+        accuracy = location.getAccuracy();
+        bearing = location.getBearing();
+        this.distance = distance;
+        this.time = time;
+        this.mapId = mapId;
     }
 
     public LatLng toLatLng(){
@@ -101,7 +119,7 @@ public class TTLocation {
         return speed;
     }
 
-    public float getElevation() {
+    public float getAltitude() {
         return elevation;
     }
 

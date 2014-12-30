@@ -77,7 +77,7 @@ public class MapInfoFragment extends ResultsSubFragment {
                 float[][] altArrays = new float[1][locs.length];
                 for (int locIndex = 0; locIndex < locs.length; locIndex++) {
                     timeArrays[0][locIndex] = locs[locIndex].getTime();
-                    altArrays[0][locIndex] = locs[locIndex].getElevation();
+                    altArrays[0][locIndex] = locs[locIndex].getAltitude();
                 }
                 ((ResultsActivity)getActivity()).showChartFragment("Altitude", timeArrays,
                         altArrays, activeMaps);

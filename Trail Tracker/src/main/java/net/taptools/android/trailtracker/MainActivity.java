@@ -28,6 +28,7 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
+import net.taptools.android.trailtracker.models.TTLocation;
 import net.taptools.android.trailtracker.results.ResultsFragment;
 
 import java.util.ArrayList;

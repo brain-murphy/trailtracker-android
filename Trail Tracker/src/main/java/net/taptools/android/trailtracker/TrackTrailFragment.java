@@ -8,11 +8,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import net.taptools.android.trailtracker.models.Stop;
+import net.taptools.android.trailtracker.models.TTLocation;
 import net.taptools.android.trailtracker.models.Waypoint;
 import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
 import net.taptools.android.trailtracker.dialogs.MapDetailsDialogFragment;
@@ -73,19 +76,26 @@ public class TrackTrailFragment extends Fragment implements
     private Menu actionMenu;
 
     public static TrackTrailFragment newInstance() {
-        Log.d("TrackTrailFragment", "newInstance()");
         return new TrackTrailFragment();
     }
 
     public TrackTrailFragment(){
         //default empty constructor
-        Log.d("TrackTrailFragment", "constructor");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                if (key.equals(getString(R.string.key_show_stops))) {
+                    drawStops();
+                }
+            }
+        });
     }
 
     @Override
@@ -100,52 +110,59 @@ public class TrackTrailFragment extends Fragment implements
         getActivity().getFragmentManager().beginTransaction()
                 .add(R.id.dashboardFragmentWindow, dashboardFragment)
                 .commit();
-        if(TrailTrackingService.getStarted()){
+        if (TrailTrackingService.getStarted()) {
             MainActivity activity = (MainActivity)getActivity();
             if(!activity.isBoundToLocationService()){
                 Log.d("TrackTrailFrag onCreateView()","binding to tracking Service");
                 activity.bindToLocationService();
             }
-            if(sqLiteHelper== null){
-                sqLiteHelper=((MyApplication)getActivity().getApplication()).getDatabaseHelper();
-            }else{
+            if (sqLiteHelper == null) {
+                sqLiteHelper = ((MyApplication)getActivity().getApplication()).getDatabaseHelper();
+            } else {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                if (prefs.getBoolean(getString(R.string.key_show_stops), true)) {
+                    drawStops();
+                }
+
                 drawWaypoints();
-                drawStops();
             }
         }
         return layout;
     }
 
-    private void drawWaypoints(){
+    private void drawWaypoints() {
         waypoints = new ArrayList<Waypoint>(Arrays.asList(
-                Waypoint.getAll(sqLiteHelper,
-                        ((MainActivity) getActivity()).binder.getMapId())
+                Waypoint.getAll(sqLiteHelper, ((MainActivity) getActivity()).binder.getMapId())
         ));
         GoogleMap map = mapFragment.getMap();
-        if(waypointMarkers == null){
+        if (waypointMarkers == null) {
             waypointMarkers = new ArrayList<Marker>();
         }
-        for(Marker marker : waypointMarkers) {
+        for (Marker marker : waypointMarkers) {
             marker.remove();
         }
-        for(Waypoint wp: waypoints){
-            Log.d("TrackTrailFrag onCreateView()","wp added");
+        for (Waypoint wp: waypoints) {
+            Log.d("TrackTrailFrag onCreateView()", "wp added");
             waypointMarkers.add(map.addMarker(wp.getMarker()));
         }
     }
 
-    private void drawStops(){
-        Stop[] stops =Stop.getAll(sqLiteHelper,
-                ((MainActivity)getActivity()).binder.getMapId());
+    private void drawStops() {
+        Stop[] stops = Stop.getAll(sqLiteHelper,
+                ((MainActivity) getActivity()).binder.getMapId());
         GoogleMap map = mapFragment.getMap();
-        if(stopMarkers== null){
+        if (stopMarkers == null) {
             stopMarkers = new ArrayList<Marker>();
         }
-        for(Marker marker : stopMarkers){
+        for (Marker marker : stopMarkers) {
             marker.remove();
         }
-        for(Stop stp :stops){
-            stopMarkers.add(map.addMarker(stp.getMarker()));
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (prefs.getBoolean(getString(R.string.key_show_stops), true)) {
+            for (Stop stp : stops) {
+                stopMarkers.add(map.addMarker(stp.getMarker()));
+            }
         }
     }
 
@@ -153,16 +170,16 @@ public class TrackTrailFragment extends Fragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.track_trail, menu);
         actionMenu = menu;
-        if(TrailTrackingService.getStarted()){
+        if (TrailTrackingService.getStarted()) {
             setActionBarTracking();
-        }else{
+        } else {
             setActionBarNotTracking();
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setActionBarTracking(){
-        Log.d("TrackTrailFrag setActionBarTracking()","called");
+        Log.d("TrackTrailFrag setActionBarTracking()", "called");
         actionMenu.findItem(R.id.action_start_tracking).setVisible(false);
         actionMenu.findItem(R.id.action_stop_tracking).setVisible(true);
         if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
@@ -221,13 +238,13 @@ public class TrackTrailFragment extends Fragment implements
     }
 
     public void onLocationServiceBound(){
-        if(((LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE))
-                .isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            if(!TrailTrackingService.getStarted()){
+        if (((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
+                .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!TrailTrackingService.getStarted()) {
                 Log.d("startTrackingServiceConnection onServiceConnected", "map Initializing");
                 initializeMap();
             }
-        }else{
+        } else {
             EnableLocationDialogFragment.newInstance(this).show(getFragmentManager(), "gpsEnableDialog");
         }
         drawWaypoints();
@@ -290,7 +307,7 @@ public class TrackTrailFragment extends Fragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("TrackTrailFrag onActivityResult()", "called");
-        switch(requestCode) {
+        switch (requestCode) {
             case GPS_REQUEST_CODE :
                 if (((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
                         .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -335,7 +352,8 @@ public class TrackTrailFragment extends Fragment implements
         }
     }
 
-    public void onLocationChanged(Location location, ArrayList<LatLng> coordinatesList, long lastLocID) {
+    public void onLocationChanged(Location location, ArrayList<LatLng> coordinatesList,
+                                  long lastLocID) {
         lastLocationId = lastLocID;
         if (findingLocProgressDialog.isShowing()) {
             findingLocProgressDialog.dismiss();
@@ -347,11 +365,11 @@ public class TrackTrailFragment extends Fragment implements
         float[] distanceFromLast = {0f};
         if (coordinatesList.size() != 0) {
             LatLng last = coordinatesList.get(coordinatesList.size() - 1);
-            Location.distanceBetween(last.latitude,last.longitude,
+            Location.distanceBetween(last.latitude, last.longitude,
                     location.getLatitude(), location.getLongitude(), distanceFromLast);
         }
         totalDistance += distanceFromLast[0];
-        dashboardFragment.setStats(location.getTime() - lastTime, totalDistance, location.getSpeed(),
+        dashboardFragment.setStats(totalDistance, location.getSpeed(),
                 location.getAltitude());
         lastTime = location.getTime();
         if (polyline == null) {

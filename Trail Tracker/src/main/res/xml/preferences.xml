@@ -8,12 +8,32 @@
     </ListPreference>
 
     <ListPreference android:title="Units"
-        android:summary="What units system would you like to use"
+        android:summary="What units system would you like to use?"
         android:key="@string/key_units"
         android:entries="@array/unit_systems"
         android:entryValues="@array/unit_systems">
     </ListPreference>
 
-    
+    <SwitchPreference
+        android:title="Show Stops"
+        android:summary="Would you like registered stops to be visible on the map?"
+        android:key="@string/key_show_stops"
+        android:defaultValue="true">
+    </SwitchPreference>
+
+
+    <ListPreference
+        android:title="Stop Sensitivity"
+        android:summary="Changes the amount of motion that will be considered a stop"
+        android:key="@string/key_stop_sensitivity"
+        android:entries="@array/power_settings"
+        android:entryValues="@array/power_settings">
+    </ListPreference>
+
+    <SwitchPreference
+        android:title="Show Stats While Tracking"
+        android:summary="Would you like time, distance, etc settings displayed while tracking?"
+        android:key="@string/key_show_stats_tracking"
+        android:defaultValue="true"/>
 
 </PreferenceScreen>
