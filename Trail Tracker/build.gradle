@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.google.android.gms:play-services:4.3.23'
+    compile files('libs/mpandroidchartlibrary-1-7-4.jar')
 }
