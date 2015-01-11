@@ -14,15 +14,15 @@ import net.taptools.android.trailtracker.TrackTrailFragment;
 /**
  * Created by Brian on 7/29/2014.
  */
-public class EnableLocationDialogFragment extends DialogFragment{
+public class EnableLocationDialogFragment extends DialogFragment {
 
-    public interface OnGPSCancelListener{
+    public interface OnGPSCancelListener {
         public void onGPSCancel();
     }
 
     private OnGPSCancelListener listener;
 
-    public static EnableLocationDialogFragment newInstance(OnGPSCancelListener listener){
+    public static EnableLocationDialogFragment newInstance(OnGPSCancelListener listener) {
         EnableLocationDialogFragment fragment = new EnableLocationDialogFragment();
         fragment.listener = listener;
         return fragment;

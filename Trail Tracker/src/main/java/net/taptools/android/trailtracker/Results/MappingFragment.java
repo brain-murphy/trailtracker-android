@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,10 +16,10 @@ import android.widget.ListAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapFragment;
 
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.R;
-import net.taptools.android.trailtracker.Models.Stop;
-import net.taptools.android.trailtracker.Models.Waypoint;
+import net.taptools.android.trailtracker.models.Stop;
+import net.taptools.android.trailtracker.models.Waypoint;
 
 import java.util.ArrayList;
 
@@ -137,7 +137,7 @@ public class MappingFragment extends ResultsSubFragment {
 //                        float[] alts = new float[locs.length];
 //                        for (int locIndex = 0; locIndex < locs.length; locIndex++) {
 //                            times[locIndex] = locs[locIndex].getTime();
-//                            alts[locIndex] = locs[locIndex].getElevation();
+//                            alts[locIndex] = locs[locIndex].getAltitude();
 //                        }
 //                        timeArrays[mapIndex] = times;
 //                        valueArrays[mapIndex] = alts;

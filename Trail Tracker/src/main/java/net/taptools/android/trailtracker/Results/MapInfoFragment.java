@@ -1,15 +1,18 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.R;
-import net.taptools.android.trailtracker.Models.TTLocation;
+import net.taptools.android.trailtracker.models.TTLocation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,8 +67,14 @@ public class MapInfoFragment extends ResultsSubFragment {
                     timeArrays[0][locIndex] = locs[locIndex].getTime();
                     speedArrays[0][locIndex] = locs[locIndex].getSpeed();
                 }
-                ((ResultsActivity)getActivity()).showChartFragment("Speed" , timeArrays,
-                        speedArrays, activeMaps);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String[] unitSystems = getResources().getStringArray(R.array.unit_systems);
+                String unitSystem = prefs.getString(getString(R.string.key_units),unitSystems[0]);
+
+                ((ResultsActivity) getActivity()).showChartFragment("Speed", timeArrays,
+                        speedArrays, activeMaps, unitSystem.equals(unitSystems[0]) ?
+                        "mph" : "km/s");
             }
         });
 
@@ -77,10 +86,16 @@ public class MapInfoFragment extends ResultsSubFragment {
                 float[][] altArrays = new float[1][locs.length];
                 for (int locIndex = 0; locIndex < locs.length; locIndex++) {
                     timeArrays[0][locIndex] = locs[locIndex].getTime();
-                    altArrays[0][locIndex] = locs[locIndex].getElevation();
+                    altArrays[0][locIndex] = locs[locIndex].getAltitude();
                 }
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String[] unitSystems = getResources().getStringArray(R.array.unit_systems);
+                String unitSystem = prefs.getString(getString(R.string.key_units),unitSystems[0]);
+
                 ((ResultsActivity)getActivity()).showChartFragment("Altitude", timeArrays,
-                        altArrays, activeMaps);
+                        altArrays, activeMaps, unitSystem.equals(unitSystems[0]) ?
+                        "ft" : "m");
             }
         });
 

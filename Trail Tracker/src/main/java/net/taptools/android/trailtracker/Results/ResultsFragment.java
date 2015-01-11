@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 import android.app.ActionBar;
 import android.app.FragmentManager;
@@ -29,13 +29,13 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import net.taptools.android.trailtracker.CheckableExpandableListAdapter;
 import net.taptools.android.trailtracker.dialogs.ConfirmDeleteDialogFragment;
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.R;
 import net.taptools.android.trailtracker.dialogs.RenameDialogFragment;
-import net.taptools.android.trailtracker.Models.Stop;
+import net.taptools.android.trailtracker.models.Stop;
 import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
-import net.taptools.android.trailtracker.Models.Waypoint;
+import net.taptools.android.trailtracker.models.Waypoint;
 
 import org.w3c.dom.Document;
 
@@ -99,6 +99,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
         //allocate hash maps to store reference to map data displayed on GoogleMap//
         polylines = new HashMap<Map, Polyline>();
         markers = new HashMap<Map, ArrayList<Marker>>();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -204,6 +205,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                     intent.putExtra(ResultsActivity.KEY_MAP_IDS, mapIds);
 
                     startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Select at least one map", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -239,8 +242,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.results, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.results,menu);
     }
 
     @Override

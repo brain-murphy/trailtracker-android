@@ -9,18 +9,18 @@
         <dex dex="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\build\intermediates\pre-dexed\debug\classes-2a984266354f43922126022712ae007441bb055e.jar" />
     </item>
     <item
+        jar="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\libs\mpandroidchartlibrary-1-7-4.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="c685e45ac6491e51640ce3571606ac22dfd4a6a3">
+        <dex dex="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\build\intermediates\pre-dexed\debug\mpandroidchartlibrary-1-7-4-0c842276442e6d6bed39cc14c3e9258a7b4f4126.jar" />
+    </item>
+    <item
         jar="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\build\intermediates\exploded-aar\com.google.android.gms\play-services\4.3.23\classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="7676c0cb230efa6ac41c47867d372ed5913029d4">
         <dex dex="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\build\intermediates\pre-dexed\debug\classes-516a48a24c05213cbd8ef8c73dba65d6f8d7aeb4.jar" />
-    </item>
-    <item
-        jar="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\libs\achartengine-1.1.0.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250">
-        <dex dex="C:\Users\Brian\Code\Android\trailtracker-android\Trail Tracker\build\intermediates\pre-dexed\debug\achartengine-1.1.0-0499f4f7a6c7ee2294d6b12bb8f850f442e94e5b.jar" />
     </item>
     <item
         jar="C:\Users\Brian\Code\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"

@@ -27,6 +27,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
+import net.taptools.android.trailtracker.models.TTLocation;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -162,6 +164,7 @@ public class TrailTrackingService extends Service implements
     private class StarterIntermediary implements LocationIntermediary {
         byte numPoints = 0;
         private Location lastLoc;
+
         public StarterIntermediary() {
         }
 
@@ -201,13 +204,13 @@ public class TrailTrackingService extends Service implements
             endAltitude = location.getAltitude();
             lastTime = Calendar.getInstance().getTimeInMillis();
 
-            if(location.getSpeed()>maxSpeed){
+            if (location.getSpeed() > maxSpeed) {
                 maxSpeed = location.getSpeed();
             }
-            if(location.getAltitude()>maxAltitude){
+            if (location.getAltitude() > maxAltitude) {
                 maxAltitude = location.getAltitude();
             }
-            if(location.getAltitude()<minAltitude){
+            if (location.getAltitude() < minAltitude) {
                 minAltitude = location.getAltitude();
             }
 
@@ -217,15 +220,15 @@ public class TrailTrackingService extends Service implements
                     location.getLatitude(), location.getLongitude(), distanceFromLast);
             totalDistance += distanceFromLast[0];
 
-            if(listener!=null) {
-                listener.onLocationReceived(location,trail,lastLocId);
+            if (listener != null) {
+                listener.onLocationReceived(location, trail, lastLocId);
             }
 
-            LatLng firstStopPt = trail.get(trail.size()-2-numStationaryPoints);
-            LatLng mostRecentPt = trail.get(trail.size()-1);
+            LatLng firstStopPt = trail.get(trail.size() - 2 - numStationaryPoints);
+            LatLng mostRecentPt = trail.get(trail.size() - 1);
             float[] results = new float[1];
-            Location.distanceBetween(firstStopPt.latitude,firstStopPt.longitude,mostRecentPt.latitude,
-                    mostRecentPt.longitude,results);
+            Location.distanceBetween(firstStopPt.latitude, firstStopPt.longitude, mostRecentPt.latitude,
+                    mostRecentPt.longitude, results);
 
             if (results[0] < location.getAccuracy()) {
                 if (numStationaryPoints == 0) {
@@ -258,7 +261,7 @@ public class TrailTrackingService extends Service implements
         @Override
         public void onLocationChanged(Location location) {
             Log.d("simpleLocIntermediary onLocationChanged()", "called");
-            listener.onLocationReceived(location,null,-1);
+            listener.onLocationReceived(location, null, -1);
         }
     };
 
@@ -278,10 +281,13 @@ public class TrailTrackingService extends Service implements
         values.put(COLUMN_BEARING, location.getBearing());
         values.put(COLUMN_DISTANCE, totalDistance);
         values.put(COLUMN_TIME, Calendar.getInstance().getTimeInMillis());
-        lastLocId = writableDatabase.insert(TABLE_LOCATIONS, null, values);//TODO this was null
+        lastLocId = writableDatabase.insert(TABLE_LOCATIONS, null, values);
     }
 
     public class TTBinder extends Binder {
+
+        private LocationIntermediary pausedIntermediary;
+
         public void setLocationListener(MainActivity activity){
             TrailTrackingService.this.listener = activity;
         }
@@ -334,6 +340,21 @@ public class TrailTrackingService extends Service implements
             readableDatabase.close();
             readableDatabase = null;
             stopSelf();
+        }
+
+        public void pauseTracking() {
+            pausedIntermediary = locationIntermediary;
+            locationIntermediary = new LocationIntermediary() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    //Deliberately do nothing
+                }
+            };
+        }
+
+        public void resumeTracking() {
+            locationIntermediary = pausedIntermediary;
+            pausedIntermediary = null;
         }
 
         public void cancelTracking(){

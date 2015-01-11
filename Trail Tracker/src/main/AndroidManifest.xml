@@ -45,7 +45,7 @@
             android:exported="true" >
         </service>
         <activity
-            android:name=".Results.ResultsActivity"
+            android:name=".results.ResultsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_mapping"
             android:parentActivityName=".MainActivity" >
@@ -56,6 +56,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.taptools.android.trailtracker.MainActivity" />
+        </activity>
+        <activity
+            android:name=".WaypointActivity"
+            android:label="Waypoint"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

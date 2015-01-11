@@ -1,11 +1,11 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 
 
 import android.os.Bundle;
 import android.app.Fragment;
 
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.TTSQLiteOpenHelper;
 
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 
 /**
- * Abstract Fragment used by Fragments embedded inside {@link net.taptools.android.trailtracker.Results.ResultsActivity}.
- * standardizes the reception and reporting of the {@link net.taptools.android.trailtracker.Models.Map}s that are displayed.
+ * Abstract Fragment used by Fragments embedded inside {@link net.taptools.android.trailtracker.results.ResultsActivity}.
+ * standardizes the reception and reporting of the {@link net.taptools.android.trailtracker.models.Map}s that are displayed.
  */
 public abstract class ResultsSubFragment extends Fragment {
 

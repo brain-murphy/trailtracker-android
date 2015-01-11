@@ -14,17 +14,13 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.media.audiofx.BassBoost;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -32,7 +28,8 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import net.taptools.android.trailtracker.Results.ResultsFragment;
+import net.taptools.android.trailtracker.models.TTLocation;
+import net.taptools.android.trailtracker.results.ResultsFragment;
 
 import java.util.ArrayList;
 
@@ -133,8 +130,6 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lastPosition = -1;
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -145,6 +140,7 @@ public class MainActivity extends ActionBarActivity
         isGooglePlayServicesAvailable();
 
         if (savedInstanceState == null) {
+            lastPosition = 0;
             activeFragment = TrackTrailFragment.newInstance();
             getFragmentManager().beginTransaction()
                     .add(R.id.container, activeFragment)
@@ -231,6 +227,12 @@ public class MainActivity extends ActionBarActivity
                     .commit();
         }
         onSectionAttached(position + 1);
+    }
+
+    public void refreshFragment() {
+        int tempPosition = lastPosition;
+        lastPosition = -100;
+        onNavigationDrawerItemSelected(tempPosition);
     }
 
     public void onSectionAttached(int number) {

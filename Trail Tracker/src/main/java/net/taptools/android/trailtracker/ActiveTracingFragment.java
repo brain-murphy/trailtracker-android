@@ -22,8 +22,8 @@ import android.widget.ImageView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
-import net.taptools.android.trailtracker.Models.Map;
-import net.taptools.android.trailtracker.Models.TTLocation;
+import net.taptools.android.trailtracker.models.Map;
+import net.taptools.android.trailtracker.models.TTLocation;
 
 import java.util.ArrayList;
 

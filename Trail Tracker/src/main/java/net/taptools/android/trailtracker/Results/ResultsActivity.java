@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Results;
+package net.taptools.android.trailtracker.results;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import net.taptools.android.trailtracker.dialogs.ConfirmDeleteDialogFragment;
-import net.taptools.android.trailtracker.Models.Map;
+import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.MyApplication;
 import net.taptools.android.trailtracker.dialogs.PickMapDialogFragment;
 import net.taptools.android.trailtracker.R;
@@ -128,9 +128,10 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
     }
 
     public void showChartFragment(String title, long[][] timeArrays, float[][] valueArrays,
-                                  ArrayList<Map> maps) {
+                                  ArrayList<Map> maps, String units) {
         getFragmentManager().beginTransaction()
-                .replace(layout.getId(), ChartFragment.newInstance(title, timeArrays, valueArrays, maps), TAG_CHART_FRAG)
+                .replace(layout.getId(), ChartFragment.newInstance(title, timeArrays, valueArrays,
+                        maps, units), TAG_CHART_FRAG)
                 .addToBackStack(TAG_CHART_FRAG)
                 .commit();
         viewState = STATE_CHART;

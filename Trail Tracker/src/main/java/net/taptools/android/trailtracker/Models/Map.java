@@ -1,4 +1,4 @@
-package net.taptools.android.trailtracker.Models;
+package net.taptools.android.trailtracker.models;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -156,7 +156,7 @@ public class Map {
         stopsSB.append(loc.getLongitude()).append(",")
                 .append(loc.getLatitude()).append(",")
                 .append(loc.getAccuracy()).append(",")
-                .append(loc.getElevation()).append(",")
+                .append(loc.getAltitude()).append(",")
                 .append(loc.getAccuracy()).append(",")
                 .append(loc.getSpeed()).append(",")
                 .append(loc.getTime()).append(",")

@@ -9,5 +9,11 @@
     tools:context="net.taptools.android.trailtracker.ChartActivity"
     android:id="@+id/chartFrame">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/seekBar1" />
+
 
 </RelativeLayout>
