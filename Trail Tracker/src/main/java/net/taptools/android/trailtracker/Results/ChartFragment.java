@@ -27,9 +27,6 @@ import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Stack;
 
 public class ChartFragment extends ResultsSubFragment implements OnChartGestureListener, OnChartValueSelectedListener {
@@ -98,6 +95,7 @@ public class ChartFragment extends ResultsSubFragment implements OnChartGestureL
         chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
         chart.setPinchZoom(true);
+        chart.setDescription("");
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
         mv.setOffsets(-mv.getMeasuredWidth() / 2, -mv.getMeasuredHeight());
         chart.setMarkerView(mv);
@@ -170,7 +168,6 @@ public class ChartFragment extends ResultsSubFragment implements OnChartGestureL
 
         //place in chart data structures in order//
 
-
         ArrayList<String> xVals = new ArrayList<String>();
 
         //initialize ArrayLists of y values//
@@ -215,7 +212,7 @@ public class ChartFragment extends ResultsSubFragment implements OnChartGestureL
         ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>(entryArrays.length);
 
         for (int i = 0; i < entryArrays.length; i++) {
-            dataSets.add(new LineDataSet(entryArrays[i], "temp"));
+            dataSets.add(new LineDataSet(entryArrays[i], title));
         }
 
         LineData data = new LineData(xVals, dataSets);
@@ -237,7 +234,6 @@ public class ChartFragment extends ResultsSubFragment implements OnChartGestureL
 
         // set data
         chart.setData(data);
-
     }
 
     private String formatTime(long millis) {

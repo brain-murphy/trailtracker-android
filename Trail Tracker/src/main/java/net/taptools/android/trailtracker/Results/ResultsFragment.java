@@ -205,6 +205,8 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                     intent.putExtra(ResultsActivity.KEY_MAP_IDS, mapIds);
 
                     startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Select at least one map", Toast.LENGTH_SHORT).show();
                 }
             }
         });

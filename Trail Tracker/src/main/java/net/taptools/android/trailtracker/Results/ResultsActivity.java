@@ -128,9 +128,10 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
     }
 
     public void showChartFragment(String title, long[][] timeArrays, float[][] valueArrays,
-                                  ArrayList<Map> maps) {
+                                  ArrayList<Map> maps, String units) {
         getFragmentManager().beginTransaction()
-                .replace(layout.getId(), ChartFragment.newInstance(title, timeArrays, valueArrays, maps, "tempUnits"), TAG_CHART_FRAG)
+                .replace(layout.getId(), ChartFragment.newInstance(title, timeArrays, valueArrays,
+                        maps, units), TAG_CHART_FRAG)
                 .addToBackStack(TAG_CHART_FRAG)
                 .commit();
         viewState = STATE_CHART;

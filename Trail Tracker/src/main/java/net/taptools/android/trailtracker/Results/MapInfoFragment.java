@@ -1,7 +1,10 @@
 package net.taptools.android.trailtracker.results;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,8 +67,14 @@ public class MapInfoFragment extends ResultsSubFragment {
                     timeArrays[0][locIndex] = locs[locIndex].getTime();
                     speedArrays[0][locIndex] = locs[locIndex].getSpeed();
                 }
-                ((ResultsActivity)getActivity()).showChartFragment("Speed" , timeArrays,
-                        speedArrays, activeMaps);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String[] unitSystems = getResources().getStringArray(R.array.unit_systems);
+                String unitSystem = prefs.getString(getString(R.string.key_units),unitSystems[0]);
+
+                ((ResultsActivity) getActivity()).showChartFragment("Speed", timeArrays,
+                        speedArrays, activeMaps, unitSystem.equals(unitSystems[0]) ?
+                        "mph" : "km/s");
             }
         });
 
@@ -79,8 +88,14 @@ public class MapInfoFragment extends ResultsSubFragment {
                     timeArrays[0][locIndex] = locs[locIndex].getTime();
                     altArrays[0][locIndex] = locs[locIndex].getAltitude();
                 }
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String[] unitSystems = getResources().getStringArray(R.array.unit_systems);
+                String unitSystem = prefs.getString(getString(R.string.key_units),unitSystems[0]);
+
                 ((ResultsActivity)getActivity()).showChartFragment("Altitude", timeArrays,
-                        altArrays, activeMaps);
+                        altArrays, activeMaps, unitSystem.equals(unitSystems[0]) ?
+                        "ft" : "m");
             }
         });
 
