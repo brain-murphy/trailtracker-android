@@ -146,14 +146,14 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
         float bearingToPt = 0f;
             float distanceToCurrent = ptToHit.distanceTo(loc.getLongitude(), loc.getLatitude());
             if (distanceToCurrent > loc.getAccuracy()) {
-                bearingToPt = ptToHit.bearingHere(loc.getLongitude(), loc.getLatitude());
+                bearingToPt = ptToHit.bearingTo(loc.getLongitude(), loc.getLatitude());
             } else {
                 if(pointsToHit.size()==0){
                     TraceCompleteDialogFragment.newInstance(this).show(getFragmentManager(),"traceCompleteDialog");
                 }
                 for (int locIndex = 0; locIndex < pointsToHit.size(); locIndex++) {
                     TTLocation thisPt = pointsToHit.get(locIndex);
-                    bearingToPt = thisPt.bearingHere(loc.getLongitude(), loc.getLatitude());
+                    bearingToPt = thisPt.bearingTo(loc.getLongitude(), loc.getLatitude());
                     float distanceToPt = thisPt.distanceTo(loc.getLongitude(), loc.getLatitude());
                     if (distanceToPt > 45 || Math.abs(bearingToPt) > 30) {
                         ptToHit = thisPt;

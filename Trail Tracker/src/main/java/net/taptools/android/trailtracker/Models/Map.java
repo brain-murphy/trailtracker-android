@@ -1,8 +1,12 @@
 package net.taptools.android.trailtracker.models;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -14,6 +18,7 @@ import org.w3c.dom.Element;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.*;
 
@@ -219,34 +224,51 @@ public class Map {
         return locations;
     }
 
+    /**
+     * filters out nonessential points.
+     * A point is nonessential if it affects the path taken by less than 5 meters
+     * @return The checkpoints of the trail in this map
+     */
     public TTLocation[] getCheckpoints() {
-        if (checkpoints == null) {
-            ArrayList<TTLocation> locationList = new ArrayList<TTLocation>(locations.length / 2);
-            TTLocation lastAdded = locations[0];
-            locationList.add(lastAdded);
-            double lastBearing = 0.0;
-            if (locations[1] != null) {
-                lastBearing = lastAdded.bearingHere(locations[1].getLongitude(),
-                        locations[1].getLatitude());
-            }
-            for (int i = 1; i < locations.length; i++) {
-                double thisBearing = lastAdded.bearingHere(locations[i].getLongitude(),
-                        locations[i].getLatitude());
-                if (Math.abs(thisBearing - lastBearing) > 15
-                        || lastAdded.distanceTo(locations[i].getLongitude(),
-                        locations[i].getLatitude()) > 40) {
-//TODO left off here with issues.
+        //starting point always relevant//
+        ArrayList<TTLocation> checkpointList = new ArrayList<TTLocation>();
+        checkpointList.add(locations[0]);
 
-                    lastAdded = locations[i];
-                    locationList.add(lastAdded);
-                }
-                lastBearing = thisBearing;
+        int relevantPointIndex = 0;
+        for (int locationIndex = 2; locationIndex < locations.length; locationIndex++) {
+            TTLocation ptInQuestion = locations[locationIndex - 1];
+            TTLocation relevantPt = locations[relevantPointIndex];
+
+            //distance from the last relevant to the point in question//
+            float distanceTo = relevantPt
+                    .distanceTo(ptInQuestion.getLongitude(), ptInQuestion.getLatitude());
+
+            //if the point is less than 5m away, it can't affect the trail by more than 5m//
+            if (distanceTo < 5) {
+                continue;
             }
-            TTLocation[] result = new TTLocation[locationList.size()];
-            locationList.toArray(result);
-            return result;
+
+            //difference between the bearing from the relevant point to the point in question
+            //and the bearing from the relevant point to the point after the point in question
+            float bearingDifference = Math.abs(relevantPt.bearingTo(ptInQuestion.getLongitude(),
+                    ptInQuestion.getLatitude()) - relevantPt.bearingTo(locations[locationIndex].getLongitude(),
+                    locations[locationIndex].getLatitude()));
+
+            //distance away from the point in question that the new path will take//
+            double distanceOff = Math.sin(bearingDifference) * distanceTo;
+
+            if (distanceOff > 5) {
+                checkpointList.add(ptInQuestion);
+                relevantPointIndex = locationIndex - 1;
+            }
         }
-        return checkpoints;
+
+        //the last point is always relevant and, as a result of the loop conditions,
+        //never added by the loop//
+        checkpointList.add(locations[locations.length - 1]);
+
+        TTLocation[] array = new TTLocation[checkpointList.size()];
+        return checkpointList.toArray(array);
     }
 
     public Waypoint[] getWaypoints() {

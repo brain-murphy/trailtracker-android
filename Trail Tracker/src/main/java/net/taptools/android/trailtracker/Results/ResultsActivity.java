@@ -280,10 +280,10 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
                         db.update(TABLE_MAPS, values, COLUMN_ID + " = " + maps.get(0).getId(), null);
                         FragmentManager fm = getFragmentManager();
 
-                        //close activity for now//
-                        while (fm.getBackStackEntryCount() > 0) {
-                            fm.popBackStack();
-                        }
+//                        while (fm.getBackStackEntryCount() > 0) {
+//                            fm.popBackStack();
+//                            fm.executePendingTransactions();
+//                        }//TODO maybe not this
                         finish();
                     }
                 }).show(getFragmentManager(), "renamer");

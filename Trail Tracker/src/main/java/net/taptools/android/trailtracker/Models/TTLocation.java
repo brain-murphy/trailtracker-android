@@ -143,21 +143,6 @@ public class TTLocation {
         return mapId;
     }
 
-    public float bearingHere(double lon, double lat) {
-        synchronized (mResults) {
-            // See if we already have the result
-            if (lat != mLat1 || lon != mLon1 ) {
-                computeDistanceAndBearing(lat, lon,
-                        latitude, longitude, mResults);
-                mLat1 = lat;
-                mLon1 = lon;
-                mDistance = mResults[0];
-                mInitialBearing = mResults[1];
-            }
-            return mInitialBearing;
-        }
-    }
-
     public float distanceTo(double lon, double lat) {
         // See if we already have the result
         synchronized (mResults) {
@@ -170,6 +155,20 @@ public class TTLocation {
                 mInitialBearing = mResults[1];
             }
             return mDistance;
+        }
+    }
+
+    public float bearingTo(double lon, double lat) {
+        synchronized (mResults) {
+            if (lat != mLat1 || lon != mLon1) {
+                computeDistanceAndBearing(lat, lon,
+                        latitude, longitude, mResults);
+                mLat1 = lat;
+                mLon1 = lon;
+                mDistance = mResults[0];
+                mInitialBearing = mResults[1];
+            }
+            return mInitialBearing;
         }
     }
 
