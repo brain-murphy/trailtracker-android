@@ -42,7 +42,7 @@ public class MapInfoFragment extends ResultsSubFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mapData = activeMaps.get(0);
         }
     }
@@ -70,7 +70,7 @@ public class MapInfoFragment extends ResultsSubFragment {
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String[] unitSystems = getResources().getStringArray(R.array.unit_systems);
-                String unitSystem = prefs.getString(getString(R.string.key_units),unitSystems[0]);
+                String unitSystem = prefs.getString(getString(R.string.key_units), unitSystems[0]);
 
                 ((ResultsActivity) getActivity()).showChartFragment("Speed", timeArrays,
                         speedArrays, activeMaps, unitSystem.equals(unitSystems[0]) ?
@@ -99,34 +99,34 @@ public class MapInfoFragment extends ResultsSubFragment {
             }
         });
 
-        ((TextView)root.findViewById(R.id.mapNameTextView)).setText(mapData.getName());
+        ((TextView) root.findViewById(R.id.mapNameTextView)).setText(mapData.getName());
         String notes = mapData.getNotes();
-        if(notes==null ||notes.trim().equals("")){
+        if (notes == null || notes.trim().equals("")) {
             notes = "none";
         }
-        ((TextView)root.findViewById(R.id.notesTextView)).setText(notes);
+        ((TextView) root.findViewById(R.id.notesTextView)).setText(notes);
         Calendar mapCal = Calendar.getInstance();
         mapCal.setTimeInMillis(mapData.getStartTime());
-        String dateString = String.format("%02d/%02d/%d %02d:%02d%s",mapCal.get(Calendar.MONTH),
-                mapCal.get(Calendar.DATE),mapCal.get(Calendar.YEAR),mapCal.get(Calendar.HOUR),
-                mapCal.get(Calendar.MINUTE),mapCal.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM");
-        ((TextView)root.findViewById(R.id.whenRecordedTextView)).setText(dateString);
-        ((TextView)root.findViewById(R.id.timeTextView_info)).setText(mapData.getFormattedTime());
-        ((TextView)root.findViewById(R.id.totalDistanceTextView)).setText(
+        String dateString = String.format("%02d/%02d/%d %02d:%02d%s", mapCal.get(Calendar.MONTH),
+                mapCal.get(Calendar.DATE), mapCal.get(Calendar.YEAR), mapCal.get(Calendar.HOUR),
+                mapCal.get(Calendar.MINUTE), mapCal.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM");
+        ((TextView) root.findViewById(R.id.whenRecordedTextView)).setText(dateString);
+        ((TextView) root.findViewById(R.id.timeTextView_info)).setText(mapData.getFormattedTime());
+        ((TextView) root.findViewById(R.id.totalDistanceTextView)).setText(
                 Float.toString(mapData.getTotalDistance()));
-        ((TextView)root.findViewById(R.id.linearDistanceTextView)).setText(
+        ((TextView) root.findViewById(R.id.linearDistanceTextView)).setText(
                 Float.toString(mapData.getLinearDistance()));
-        ((TextView)root.findViewById(R.id.avgSpeedTextView)).setText(
+        ((TextView) root.findViewById(R.id.avgSpeedTextView)).setText(
                 Float.toString(mapData.getAverageSpeed()));
-        ((TextView)root.findViewById(R.id.maxSpeedTextView)).setText(
+        ((TextView) root.findViewById(R.id.maxSpeedTextView)).setText(
                 Float.toString(mapData.getMaximumSpeed()));
-        ((TextView)root.findViewById(R.id.minAltitudeTextView)).setText(
+        ((TextView) root.findViewById(R.id.minAltitudeTextView)).setText(
                 Float.toString(mapData.getMinimumAltitude()));
-        ((TextView)root.findViewById(R.id.maxAltitudeTextView)).setText(
+        ((TextView) root.findViewById(R.id.maxAltitudeTextView)).setText(
                 Float.toString(mapData.getMaximumAltitude()));
-        ((TextView)root.findViewById(R.id.startingAltitudeTextView)).setText(
+        ((TextView) root.findViewById(R.id.startingAltitudeTextView)).setText(
                 Float.toString(mapData.getStartAltitude()));
-        ((TextView)root.findViewById(R.id.endingAltitudeTextView)).setText(
+        ((TextView) root.findViewById(R.id.endingAltitudeTextView)).setText(
                 Float.toString(mapData.getEndAltitude()));
         return root;
     }

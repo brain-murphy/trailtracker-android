@@ -29,7 +29,8 @@ import net.taptools.android.trailtracker.R;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ChartFragment extends ResultsSubFragment implements OnChartGestureListener, OnChartValueSelectedListener {
+public class ChartFragment extends ResultsSubFragment implements OnChartGestureListener,
+        OnChartValueSelectedListener {
 
     private static final String KEY_TIME_ARRAYS = "timearraykey";
     private static final String KEY_VALUE_ARRAYS = "valueArrayskey";
@@ -97,7 +98,7 @@ public class ChartFragment extends ResultsSubFragment implements OnChartGestureL
         chart.setPinchZoom(true);
         chart.setDescription("");
         MyMarkerView mv = new MyMarkerView(getActivity(), R.layout.custom_marker_view);
-        mv.setOffsets(-mv.getMeasuredWidth() / 2, -mv.getMeasuredHeight());
+        mv.setOffsets((- mv.getMeasuredWidth()) / 2, (- mv.getMeasuredHeight()));
         chart.setMarkerView(mv);
         // enable/disable highlight indicators (the lines that indicate the
         // highlighted Entry)

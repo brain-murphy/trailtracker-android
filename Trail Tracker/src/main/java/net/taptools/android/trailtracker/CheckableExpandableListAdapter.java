@@ -80,7 +80,7 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
      * @param enabled true to enable; false to disable
      */
     public void setChildChecked(int id, boolean enabled) {
-        Log.d("Checkable#setChildChecked", "id: "+ id + " enabled: " + enabled);
+        Log.d("Checkable#setChildChecked", "id: " + id + " enabled: " + enabled);
         for (int idIndex = 0; idIndex < ids.size(); idIndex++) {
             if (ids.get(idIndex) == id) {
                 enabledChildren[idIndex] = enabled;
@@ -102,7 +102,7 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
 
     public int getChildIndex(int groupPosition, int childPosition) {
         int index = 0;
-        for (int groupIndex = 0;groupIndex<groupPosition;groupIndex++) {
+        for (int groupIndex = 0; groupIndex<groupPosition; groupIndex++) {
             index += groupSizes.get(groupIndex);
         }
         return index + childPosition;
@@ -177,9 +177,9 @@ public class CheckableExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(android.R.layout.simple_expandable_list_item_2,null);
+            convertView = inflater.inflate(android.R.layout.simple_expandable_list_item_2, null);
         }
-        TextView textView = (TextView)convertView.findViewById(android.R.id.text1);
+        TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
         textView.setText(headerTitle);
         ((TextView) convertView.findViewById(android.R.id.text2))
                 .setText(getChildrenCount(groupPosition) + " Maps");

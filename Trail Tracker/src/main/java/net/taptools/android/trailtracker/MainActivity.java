@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener{
+        GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final String TAG_TRACING_FRAGMENT = "tracing";
     private static final String TAG_RESULTS_FRAGMENT = "results";
@@ -60,17 +60,19 @@ public class MainActivity extends ActionBarActivity
 
     private SQLiteDatabase writableDatabase;
 
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
+
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d("ServiceConnection onServiceConnected()", "called");
-            binder = (TrailTrackingService.TTBinder)service;
+            binder = (TrailTrackingService.TTBinder) service;
             binder.setLocationListener(MainActivity.this);
-            if(activeFragment instanceof TrackTrailFragment){
-                ((TrackTrailFragment)activeFragment).onLocationServiceBound();
+            if (activeFragment instanceof TrackTrailFragment) {
+                ((TrackTrailFragment) activeFragment).onLocationServiceBound();
             }
-            if(activeFragment instanceof TraceTrailFragment){
-                ((TraceTrailFragment)activeFragment).onLocationServiceBound();
+            if (activeFragment instanceof TraceTrailFragment) {
+                ((TraceTrailFragment) activeFragment).onLocationServiceBound();
             }
             isBoundToLocationService = true;
         }
@@ -81,16 +83,17 @@ public class MainActivity extends ActionBarActivity
         }
     };
 
-    public void bindToLocationService(){
+    public void bindToLocationService() {
         Log.d("MainActivity bindToLocationService()", "called");
         bindService(new Intent(this, TrailTrackingService.class),
                 serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public void unbindFromLocationService(){
+    public void unbindFromLocationService() {
         Log.d("MainActivity#unbindFromLocationService()", "called");
-        if(isBoundToLocationService)
+        if (isBoundToLocationService) {
             unbindService(serviceConnection);
+        }
         isBoundToLocationService = false;
         binder = null;
     }
@@ -148,17 +151,17 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    public boolean isGooglePlayServicesAvailable(){
+    public boolean isGooglePlayServicesAvailable() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode == ConnectionResult.SUCCESS) {
             return true;
         } else {
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode,this,
+            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
                     CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            if (errorDialog!= null) {
+            if (errorDialog != null) {
                 ErrorDialogFragment errorFrag = new ErrorDialogFragment();
                 errorFrag.setDialog(errorDialog);
-                errorFrag.show(getFragmentManager(),"Location Services");
+                errorFrag.show(getFragmentManager(), "Location Services");
             }
         }
         return false;
@@ -175,18 +178,18 @@ public class MainActivity extends ActionBarActivity
              */
                 switch (resultCode) {
                     case Activity.RESULT_OK :
-                    if(!isGooglePlayServicesAvailable()){
+                    if (!isGooglePlayServicesAvailable()) {
                         //TODO tell user to fix google play services issue.
                     }
-                        break;
+                    break;
                 }
              break;
             case TrackTrailFragment.GPS_REQUEST_CODE :
-                activeFragment.onActivityResult(requestCode,resultCode,data);
+                activeFragment.onActivityResult(requestCode, resultCode, data);
                 break;
             case TrackTrailFragment.WAYPOINT_REQUEST_CODE :
                 Log.d("mainActivity onActivityResult()","passing to fragment");
-                activeFragment.onActivityResult(requestCode,resultCode,data);
+                activeFragment.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
@@ -237,16 +240,16 @@ public class MainActivity extends ActionBarActivity
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 1 :
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 2 :
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+            case 3 :
                 mTitle = getString(R.string.title_section3);
                 break;
-            case 4:
+            case 4 :
                 mTitle = getString(R.string.title_section5);
                 break;
         }

@@ -52,7 +52,8 @@ public class Map {
     public static final Map instanceOf(TTSQLiteOpenHelper sqLiteOpenHelper, int mapId) {
         Map map = new Map();
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor cursor = database.query(TABLE_MAPS, ALL_MAP_COLUMNS, COLUMN_ID + " = " + mapId, null, null, null, null);
+        Cursor cursor = database.query(TABLE_MAPS, ALL_MAP_COLUMNS, COLUMN_ID + " = " + mapId,
+                null, null, null, null);
         cursor.moveToFirst();
         map.id = mapId;
         map.name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
@@ -76,15 +77,15 @@ public class Map {
         return map;
     }
 
-    public void delete(TTSQLiteOpenHelper openHelper){
+    public void delete(TTSQLiteOpenHelper openHelper) {
         SQLiteDatabase db = openHelper.getWritableDatabase();
-        db.delete(TABLE_STOPS,COLUMN_MAP_ID+" = "+id,null);
-        db.delete(TABLE_WAYPOINTS, COLUMN_MAP_ID+" = "+id,null);
-        db.delete(TABLE_LOCATIONS,COLUMN_MAP_ID+" = "+id, null);
-        db.delete(TABLE_MAPS,COLUMN_ID+" = "+id, null);
+        db.delete(TABLE_STOPS,COLUMN_MAP_ID + " = " + id, null);
+        db.delete(TABLE_WAYPOINTS, COLUMN_MAP_ID + " = " + id, null);
+        db.delete(TABLE_LOCATIONS, COLUMN_MAP_ID + " = " + id, null);
+        db.delete(TABLE_MAPS,COLUMN_ID + " = " + id, null);
     }
 
-    public static PolylineOptions toNewPolyline(TTLocation[] locations){
+    public static PolylineOptions toNewPolyline(TTLocation[] locations) {
         PolylineOptions options = new PolylineOptions();
         for(int pointIndex = 0; pointIndex < locations.length; pointIndex++){
             options.add(locations[pointIndex].toLatLng());
@@ -92,7 +93,7 @@ public class Map {
         return options;
     }
 
-    public String getFormattedTime(){
+    public String getFormattedTime() {
         long millis = endTime-startTime;
         long second = (millis / 1000) % 60;
         long minute = (millis / (1000 * 60)) % 60;
@@ -100,32 +101,32 @@ public class Map {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
-    public Element getKMLElement(Document doc){
+    public Element getKMLElement(Document doc) {
         Element root = doc.createElement("kml");
         root.appendChild(doc.createElement("start").appendChild(doc.createTextNode("" + startTime)));
         Element trailPoints = doc.createElement("trail-points");
         StringBuilder ptsSB = new StringBuilder("");
-        for(TTLocation loc : locations){
+        for (TTLocation loc : locations) {
             appendLocationString(ptsSB,loc);
         }
         trailPoints.appendChild(doc.createTextNode(ptsSB.toString()));
         root.appendChild(trailPoints);
         Element stops = doc.createElement("stops");
         StringBuilder stopsSB = new StringBuilder("");
-        for(Stop stop: getStops()){
+        for (Stop stop : getStops()) {
             appendLocationString(stopsSB, stop.getStartLocation());
         }
         stops.appendChild(doc.createTextNode(stopsSB.toString()));
         root.appendChild(stops);
         Element waypointsEle = doc.createElement("waypoints");
-        for(Waypoint wp : waypoints){
+        for (Waypoint wp : waypoints) {
             Element wpEle = doc.createElement("waypoint");
             wpEle.appendChild(doc.createElement("name").appendChild(doc.createTextNode(wp.getName())));
             StringBuilder wpLocSB = new StringBuilder("");
-            appendLocationString(wpLocSB,wp.getLocation());
+            appendLocationString(wpLocSB, wp.getLocation());
             wpEle.appendChild(doc.createElement("location").appendChild(doc.createTextNode(wpLocSB.toString())));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            wp.getImage().compress(Bitmap.CompressFormat.JPEG,80, outputStream);
+            wp.getImage().compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
             Log.d("Map getKMLELement()", "jpg output:" + outputStream.toString());
             wpEle.appendChild(doc.createElement("image").appendChild(doc.createTextNode(outputStream.toString())));
             waypointsEle.appendChild(wpEle);
@@ -146,7 +147,7 @@ public class Map {
         root.appendChild(doc.createElement("end-elevation").appendChild(doc.createTextNode(
                 Float.toString(endAltitude))));
         root.appendChild(doc.createElement("trip-time").appendChild(doc.createTextNode(
-                Integer.toString((endTime-startTime)/1000))));
+                Integer.toString((endTime - startTime) / 1000))));
         root.appendChild(doc.createElement("notes").appendChild(doc.createTextNode(notes)));
         return root;
     }
@@ -165,7 +166,7 @@ public class Map {
                 .append(loc.getAccuracy()).append(",")
                 .append(loc.getSpeed()).append(",")
                 .append(loc.getTime()).append(",")
-                .append(loc.getTime()/1000).append(",")
+                .append(loc.getTime() / 1000).append(",")
                 .append(loc.getDistance()).append(";").append("\n");
     }
 

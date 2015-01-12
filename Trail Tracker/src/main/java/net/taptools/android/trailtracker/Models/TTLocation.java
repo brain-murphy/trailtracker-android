@@ -39,7 +39,7 @@ public class TTLocation {
     public static final TTLocation instanceOf(TTSQLiteOpenHelper sqLiteOpenHelper, long locId) {
         TTLocation loc = new TTLocation();
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor crsr = database.query(TABLE_LOCATIONS,ALL_LOCATION_COLUMNS, COLUMN_ID + " = " + locId,
+        Cursor crsr = database.query(TABLE_LOCATIONS, ALL_LOCATION_COLUMNS, COLUMN_ID + " = " + locId,
                 null, null, null, null);
         crsr.moveToFirst();
         loc.id = locId;
@@ -100,7 +100,7 @@ public class TTLocation {
     }
 
     public LatLng toLatLng(){
-        return new LatLng(latitude,longitude);
+        return new LatLng(latitude, longitude);
     }
 
     public long getId() {

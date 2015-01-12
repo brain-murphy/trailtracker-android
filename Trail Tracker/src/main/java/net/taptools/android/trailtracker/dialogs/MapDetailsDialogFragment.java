@@ -42,10 +42,10 @@ public class MapDetailsDialogFragment extends DialogFragment {
     public static MapDetailsDialogFragment instanceOf(String mode, long mapId, MapDetailsChangeListener listener){
         MapDetailsDialogFragment frag = new MapDetailsDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_MODE,mode);
-        bundle.putLong(TrailTrackingService.KEY_MAP_ID,mapId);
+        bundle.putString(KEY_MODE, mode);
+        bundle.putLong(TrailTrackingService.KEY_MAP_ID, mapId);
         frag.setArguments(bundle);
-        frag.listener= listener;
+        frag.listener = listener;
         return frag;
     }
 

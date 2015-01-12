@@ -377,24 +377,24 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                     //Create arraylist if it is not already in hash map//
                     if (groupNames.contains(todayStr)) {
                         mapsInGroup = mapGroups.get(todayStr);
-                    }else {
+                    } else {
                         groupNames.add(todayStr);
                         mapsInGroup = new ArrayList<String>();
                     }
                     mapsInGroup.add(crsr.getString(crsr.getColumnIndex(COLUMN_NAME)));
-                    mapGroups.put(todayStr,mapsInGroup);
+                    mapGroups.put(todayStr, mapsInGroup);
                     //Place map name in group titled "Yesterday" if it was created yesterday//
                 } else if (mapDateStr.equals(yesterdayCalStr)) {
                     ArrayList<String> mapsInGroup = null;
                     String yesterdayStr = "Yesterday";
                     if (groupNames.contains(yesterdayStr)) {
                         mapsInGroup = mapGroups.get(yesterdayStr);
-                    }else {
+                    } else {
                         groupNames.add(yesterdayStr);
                         mapsInGroup = new ArrayList<String>();
                     }
                     mapsInGroup.add(crsr.getString(crsr.getColumnIndex(COLUMN_NAME)));
-                    mapGroups.put(yesterdayStr,mapsInGroup);
+                    mapGroups.put(yesterdayStr, mapsInGroup);
                     //if map created three days or more ago, store in group by date//
                 } else {
                     ArrayList<String> mapsInGroup = null;
@@ -405,7 +405,7 @@ public class ResultsFragment extends Fragment implements RenameDialogFragment.Re
                         mapsInGroup = new ArrayList<String>();
                     }
                     mapsInGroup.add(crsr.getString(crsr.getColumnIndex(COLUMN_NAME)));
-                    mapGroups.put(mapDateStr,mapsInGroup);
+                    mapGroups.put(mapDateStr, mapsInGroup);
                 }
                 publishProgress();
                 crsr.moveToNext();

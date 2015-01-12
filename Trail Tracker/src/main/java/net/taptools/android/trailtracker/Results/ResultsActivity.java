@@ -45,7 +45,8 @@ import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.COLUMN_ID;
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.COLUMN_NAME;
 import static net.taptools.android.trailtracker.TTSQLiteOpenHelper.TABLE_MAPS;
 
-public class ResultsActivity extends Activity implements ConfirmDeleteDialogFragment.OnMapDeletedListener {
+public class ResultsActivity extends Activity implements
+        ConfirmDeleteDialogFragment.OnMapDeletedListener {
 
     public static final String KEY_MAP_IDS = "mapidskey";
 
@@ -75,15 +76,15 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
             switch (viewState) {
                 //Fallthrough behavior intentional//
                 case STATE_CHART:
-                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_CHART_FRAG)) != null) {
+                    if ((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_CHART_FRAG)) != null) {
                         fragStack.push(temp);
                     }
                 case STATE_INFO:
-                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_INFO_FRAG)) != null) {
+                    if ((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_INFO_FRAG)) != null) {
                         fragStack.push(temp);
                     }
                 case STATE_MAPPING:
-                    if((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_MAPPING_FRAG)) != null) {
+                    if ((temp = (ResultsSubFragment)manager.findFragmentByTag(TAG_MAPPING_FRAG)) != null) {
                         fragStack.push(temp);
                     }
             }
@@ -104,7 +105,7 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
 
         ArrayList<Map> maps = new ArrayList<Map>(mapIds.length);
         for (int id : mapIds) {
-            maps.add(Map.instanceOf(helper,id));
+            maps.add(Map.instanceOf(helper, id));
         }
 
         layout = new FrameLayout(this);
@@ -113,7 +114,7 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
         setContentView(layout);
 
         getFragmentManager().beginTransaction()
-                .add(layout.getId(), MappingFragment.newInstance(maps),TAG_MAPPING_FRAG)
+                .add(layout.getId(), MappingFragment.newInstance(maps), TAG_MAPPING_FRAG)
                 .commit();
     }
 
@@ -139,7 +140,7 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
 
     @Override
     public void onBackPressed() {
-        if(viewState == STATE_MAPPING) {
+        if (viewState == STATE_MAPPING) {
             finish();
         }
 
@@ -195,7 +196,7 @@ public class ResultsActivity extends Activity implements ConfirmDeleteDialogFrag
             //File Name//
             String name = "";
             for (int i = 0; i < 15; i++) {
-                name += ((int)(Math.random()*10)) + "";
+                name += ((int) (Math.random() * 10)) + "";
             }
             File kmlFile = new File(emailDir.getAbsolutePath() + name + ".kml");
 
