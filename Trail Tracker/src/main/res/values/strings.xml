@@ -56,5 +56,6 @@
     <string name="key_stop_sensitivity">stopsenstitivitykey</string>
     <string name="key_show_waypoints">showwaypointskey</string>
     <string name="key_show_stats_tracking">showstatswhiletrackingkey</string>
+    <string name="key_use_checkpoints">key_use_checkpoints</string>
 
 </resources>

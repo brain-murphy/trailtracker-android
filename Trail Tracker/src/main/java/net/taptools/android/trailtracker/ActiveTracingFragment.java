@@ -57,9 +57,9 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        Log.d("ActiveTracingFragment#onCreateView()","called");
-        View root = inflater.inflate(R.layout.fragment_trace_trail,container,false);
-        compassImageView = (ImageView)root.findViewById(R.id.compassNeedleImage);
+        Log.d("ActiveTracingFragment#onCreateView()", "called");
+        View root = inflater.inflate(R.layout.fragment_trace_trail, container, false);
+        compassImageView = (ImageView) root.findViewById(R.id.compassNeedleImage);
         mapFragment = new MapFragment() {
             @Override
             public void onActivityCreated(Bundle savedInstanceState) {
@@ -75,9 +75,9 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
             }
         };
         getFragmentManager().beginTransaction()
-                .replace(R.id.mapFragmentWindow_tracing,mapFragment)
+                .replace(R.id.mapFragmentWindow_tracing, mapFragment)
                 .commit();
-        ((MainActivity)getActivity()).bindToLocationService();
+        ((MainActivity) getActivity()).bindToLocationService();
 
         return root;
     }
@@ -87,10 +87,10 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
         map.clear();
 
         map.addPolyline(Map.toNewPolyline(mapData.getCheckpoints()));
-        for(int waypointIndex = 0; waypointIndex<mapData.getWaypoints().length;waypointIndex++){
+        for (int waypointIndex = 0; waypointIndex < mapData.getWaypoints().length; waypointIndex++) {
             map.addMarker(mapData.getWaypoints()[waypointIndex].getMarker());
         }
-        for(int stopIndex = 0; stopIndex<mapData.getStops().length;stopIndex++){
+        for (int stopIndex = 0; stopIndex < mapData.getStops().length; stopIndex++) {
             map.addMarker(mapData.getStops()[stopIndex].getMarker());
         }
 
@@ -100,12 +100,12 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("ActiveTracingFragment#onCreate()","called");
-        manager = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
+        Log.d("ActiveTracingFragment#onCreate()", "called");
+        manager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         magnetometer = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         accelerometer = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         pointsToHit = new ArrayList<TTLocation>(mapData.getLocations().length);
-        for(TTLocation loc: mapData.getLocations()){
+        for (TTLocation loc : mapData.getLocations()) {
             pointsToHit.add(loc);
         }
         ptToHit = pointsToHit.get(0);
@@ -125,16 +125,16 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
         manager.unregisterListener(this);
     }
 
-    public void onLocationChanged(Location loc){
-        if(gravity==null||geomagnetic==null){
+    public void onLocationChanged(Location loc) {
+        if (gravity == null || geomagnetic == null) {
             return;
         }
         float[] r = new float[9];
         float[] i = new float[9];
-        SensorManager.getRotationMatrix(r,i,gravity,geomagnetic);
+        SensorManager.getRotationMatrix(r, i, gravity, geomagnetic);
 
         float[] values = new float[3];
-        values = SensorManager.getOrientation(r,values);
+        values = SensorManager.getOrientation(r, values);
 
         GeomagneticField geomagneticField = new GeomagneticField(
                 Double.valueOf(loc.getLatitude()).floatValue(),
@@ -142,18 +142,19 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
                 Double.valueOf(loc.getAltitude()).floatValue(),
                 System.currentTimeMillis());
 
-        float bearingNorth = (values[0]*57.2957795f +geomagneticField.getDeclination()+ 360) %360;
+        float bearingNorth = (values[0] * 57.2957795f + geomagneticField.getDeclination() + 360) % 360;
         float bearingToPt = 0f;
             float distanceToCurrent = ptToHit.distanceTo(loc.getLongitude(), loc.getLatitude());
             if (distanceToCurrent > loc.getAccuracy()) {
-                bearingToPt = ptToHit.bearingHere(loc.getLongitude(), loc.getLatitude());
+                bearingToPt = ptToHit.bearingTo(loc.getLongitude(), loc.getLatitude());
             } else {
-                if(pointsToHit.size()==0){
-                    TraceCompleteDialogFragment.newInstance(this).show(getFragmentManager(),"traceCompleteDialog");
+                if (pointsToHit.size() == 0) {
+                    TraceCompleteDialogFragment.newInstance(this).show(getFragmentManager(),
+                            "traceCompleteDialog");
                 }
                 for (int locIndex = 0; locIndex < pointsToHit.size(); locIndex++) {
                     TTLocation thisPt = pointsToHit.get(locIndex);
-                    bearingToPt = thisPt.bearingHere(loc.getLongitude(), loc.getLatitude());
+                    bearingToPt = thisPt.bearingTo(loc.getLongitude(), loc.getLatitude());
                     float distanceToPt = thisPt.distanceTo(loc.getLongitude(), loc.getLatitude());
                     if (distanceToPt > 45 || Math.abs(bearingToPt) > 30) {
                         ptToHit = thisPt;
@@ -164,7 +165,7 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
 
             }
 
-        float needleAngle = bearingToPt- bearingNorth;
+        float needleAngle = bearingToPt - bearingNorth;
 
 
         compassImageView.animate()
@@ -175,9 +176,9 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             geomagnetic = event.values;
-        else{
+        } else {
             gravity = event.values;
         }
     }
@@ -188,7 +189,7 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
 
     public void onTraceComplete() {
         Log.d("ActiveTracingFragment onGPSCancel()", "called");
-        ((MainActivity)getActivity()).unbindFromLocationService();
+        ((MainActivity) getActivity()).unbindFromLocationService();
         getFragmentManager().popBackStackImmediate();
     }
 
@@ -197,11 +198,12 @@ public class ActiveTracingFragment extends Fragment implements SensorEventListen
         private ActiveTracingFragment listener;
 
         public static TraceCompleteDialogFragment newInstance(
-                ActiveTracingFragment listener){
+                ActiveTracingFragment listener) {
             TraceCompleteDialogFragment fragment = new TraceCompleteDialogFragment();
             fragment.listener = listener;
             return fragment;
         }
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

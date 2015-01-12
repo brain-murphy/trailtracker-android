@@ -21,6 +21,12 @@
         android:defaultValue="true">
     </SwitchPreference>
 
+    <SwitchPreference
+        android:title="Checkpoints"
+        android:summary="Maps only show essential points."
+        android:key="@string/key_use_checkpoints"
+        android:defaultValue="true"/>
+
 
     <ListPreference
         android:title="Stop Sensitivity"

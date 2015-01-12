@@ -62,11 +62,11 @@ public class MapsListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void selectMap(int mapId){
+    public void selectMap(int mapId) {
         int[] ids = getArguments().getIntArray(ARG_IDS);
-        for(int idIndex = 0; idIndex<ids.length;idIndex++ ){
-            if(ids[idIndex]==mapId){
-                listAdapter.setChildChecked(idIndex,true);
+        for (int idIndex = 0; idIndex < ids.length; idIndex++) {
+            if (ids[idIndex] == mapId) {
+                listAdapter.setChildChecked(idIndex, true);
                 listAdapter.notifyDataSetChanged();
             }
             return;
@@ -91,14 +91,14 @@ public class MapsListFragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 //control checking/unchecking and store enabling/disabling
-                CheckedTextView ctv = (CheckedTextView)v;
+                CheckedTextView ctv = (CheckedTextView) v;
                 ctv.toggle();
                // listAdapter.setChildEnabled((int)id,ctv.isChecked());
                 int[] mapIds = getArguments().getIntArray(ARG_IDS);
-                if(ctv.isChecked()){
-                    multiPickerFragment.addToMap(mapIds[(int)id]);
-                }else{
-                    multiPickerFragment.removeFromMap(mapIds[(int)id]);
+                if (ctv.isChecked()) {
+                    multiPickerFragment.addToMap(mapIds[(int) id]);
+                } else {
+                    multiPickerFragment.removeFromMap(mapIds[(int) id]);
                 }
                 return true;
             }

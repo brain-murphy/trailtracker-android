@@ -42,7 +42,7 @@ public class MappingFragment extends ResultsSubFragment {
      * @param maps maps to display
      * @return {@link MappingFragment} ready to display
      */
-    public static MappingFragment newInstance(ArrayList<Map> maps){
+    public static MappingFragment newInstance(ArrayList<Map> maps) {
         MappingFragment fragment = new MappingFragment();
         fragment.activeMaps = maps;
         return fragment;
@@ -66,7 +66,7 @@ public class MappingFragment extends ResultsSubFragment {
                              Bundle savedInstanceState) {
         lastSpinnerPosition = -1;
         View root = inflater.inflate(R.layout.fragment_mapping, container, false);
-        keyLayout = (LinearLayout)root.findViewById(R.id.mapKeyLayout);
+        keyLayout = (LinearLayout) root.findViewById(R.id.mapKeyLayout);
         mapFragment = new MapFragment() {
             @Override
             public void onActivityCreated(Bundle savedInstanceState) {
@@ -155,7 +155,7 @@ public class MappingFragment extends ResultsSubFragment {
         return root;
     }
 
-    private void onMapReady(){
+    private void onMapReady() {
         for (Map mapDatum : activeMaps) {
             mapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(
                     mapDatum.getLocations()[0].toLatLng(), 30f));
@@ -176,7 +176,8 @@ public class MappingFragment extends ResultsSubFragment {
     public static class InfoChoiceDialogFragment extends DialogFragment
     {
         private ArrayList<Map> maps;
-        public static InfoChoiceDialogFragment newInstance(ArrayList<Map> mapData){
+
+        public static InfoChoiceDialogFragment newInstance(ArrayList<Map> mapData) {
             InfoChoiceDialogFragment fragment = new InfoChoiceDialogFragment();
             fragment.maps = mapData;
             return fragment;
@@ -185,11 +186,11 @@ public class MappingFragment extends ResultsSubFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             String[] mapNames = new String[maps.size()];
-            for(int mapIndex = 0; mapIndex<maps.size();mapIndex++){
+            for (int mapIndex = 0; mapIndex < maps.size(); mapIndex++) {
                 mapNames[mapIndex] = maps.get(mapIndex).getName();
             }
             ListAdapter adapter = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.select_dialog_item,mapNames);
+                    android.R.layout.select_dialog_item, mapNames);
             return new AlertDialog.Builder(getActivity())
                     .setAdapter(adapter, new DialogInterface.OnClickListener() {
                         @Override
@@ -197,7 +198,7 @@ public class MappingFragment extends ResultsSubFragment {
                             Log.i("InfoChoiceDialog", "onClick");
                             ArrayList<Map> map_s = new ArrayList<Map>(1);
                             map_s.add(maps.get(which));
-                            ((ResultsActivity)getActivity()).showInfoFragment(map_s);
+                            ((ResultsActivity) getActivity()).showInfoFragment(map_s);
                         }
                     })
                     .setTitle("Choose a Map")

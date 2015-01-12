@@ -39,7 +39,7 @@ public class TTLocation {
     public static final TTLocation instanceOf(TTSQLiteOpenHelper sqLiteOpenHelper, long locId) {
         TTLocation loc = new TTLocation();
         SQLiteDatabase database = sqLiteOpenHelper.getReadableDatabase();
-        Cursor crsr = database.query(TABLE_LOCATIONS,ALL_LOCATION_COLUMNS, COLUMN_ID + " = " + locId,
+        Cursor crsr = database.query(TABLE_LOCATIONS, ALL_LOCATION_COLUMNS, COLUMN_ID + " = " + locId,
                 null, null, null, null);
         crsr.moveToFirst();
         loc.id = locId;
@@ -100,7 +100,7 @@ public class TTLocation {
     }
 
     public LatLng toLatLng(){
-        return new LatLng(latitude,longitude);
+        return new LatLng(latitude, longitude);
     }
 
     public long getId() {
@@ -143,21 +143,6 @@ public class TTLocation {
         return mapId;
     }
 
-    public float bearingHere(double lon, double lat) {
-        synchronized (mResults) {
-            // See if we already have the result
-            if (lat != mLat1 || lon != mLon1 ) {
-                computeDistanceAndBearing(lat, lon,
-                        latitude, longitude, mResults);
-                mLat1 = lat;
-                mLon1 = lon;
-                mDistance = mResults[0];
-                mInitialBearing = mResults[1];
-            }
-            return mInitialBearing;
-        }
-    }
-
     public float distanceTo(double lon, double lat) {
         // See if we already have the result
         synchronized (mResults) {
@@ -170,6 +155,20 @@ public class TTLocation {
                 mInitialBearing = mResults[1];
             }
             return mDistance;
+        }
+    }
+
+    public float bearingTo(double lon, double lat) {
+        synchronized (mResults) {
+            if (lat != mLat1 || lon != mLon1) {
+                computeDistanceAndBearing(lat, lon,
+                        latitude, longitude, mResults);
+                mLat1 = lat;
+                mLon1 = lon;
+                mDistance = mResults[0];
+                mInitialBearing = mResults[1];
+            }
+            return mInitialBearing;
         }
     }
 
