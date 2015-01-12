@@ -82,8 +82,9 @@ public class TrailTrackingService extends Service implements
     }
 
     private void startServingLocations() {
-        if (!isStarted)
+        if (!isStarted) {
             locationIntermediary = simpleLocIntermediary;
+        }
         isServingLocations = true;
         request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -117,8 +118,9 @@ public class TrailTrackingService extends Service implements
         endAltitude = 0;
         trail = new ArrayList<LatLng>();
         stops = new ArrayList<Marker>();
-        if(!isServingLocations)
+        if (!isServingLocations) {
             startServingLocations();
+        }
         databaseHelper = ((MyApplication) getApplication()).getDatabaseHelper();
         writableDatabase = databaseHelper.getWritableDatabase();
         Log.d("databaseNull", "got writableDatabase:" + (writableDatabase != null));
@@ -145,7 +147,7 @@ public class TrailTrackingService extends Service implements
     @Override
     public void onDestroy() {
         Log.d("TrailTrackingService onDestroy()", "called");
-        if (client == null){
+        if (client == null) {
             Log.d("TrailTrackingService onDestroy()", "client null; exiting");
         } else {
             if (client.isConnected()) {
@@ -170,17 +172,17 @@ public class TrailTrackingService extends Service implements
 
         @Override
         public void onLocationChanged(Location loc) {
-                if (lastLoc != null && (loc.getAccuracy() < 5 || numPoints > 5)){
+                if (lastLoc != null && (loc.getAccuracy() < 5 || numPoints > 5)) {
                     startTime = Calendar.getInstance().getTimeInMillis();
                     lastTime = startTime;
                     firstLat = loc.getLatitude();
                     firstLong = loc.getLongitude();
                     startAltitude = loc.getAltitude();
-                    trail.add(new LatLng(loc.getLatitude(),loc.getLongitude()));
+                    trail.add(new LatLng(loc.getLatitude(), loc.getLongitude()));
                     addLocToDB(loc);
                     locationIntermediary = new TrackingIntermediary();
                 }
-            lastLoc=loc;
+            lastLoc = loc;
             numPoints++;
         }
     };
@@ -235,7 +237,7 @@ public class TrailTrackingService extends Service implements
                     firstStoppedLocID = lastLocId;
                 }
                 numStationaryPoints++;
-                previousLocID  = lastLocId;
+                previousLocID = lastLocId;
             } else if (isStopped) {
                 ContentValues newVals = new ContentValues();
                 newVals.put(COLUMN_END_LOCATION_ID, previousLocID);
@@ -288,12 +290,12 @@ public class TrailTrackingService extends Service implements
 
         private LocationIntermediary pausedIntermediary;
 
-        public void setLocationListener(MainActivity activity){
+        public void setLocationListener(MainActivity activity) {
             TrailTrackingService.this.listener = activity;
         }
 
-        public void startServingLocations(MainActivity activity){
-            if(activity.isGooglePlayServicesAvailable()) {
+        public void startServingLocations(MainActivity activity) {
+            if (activity.isGooglePlayServicesAvailable()) {
                 TrailTrackingService.this.startServingLocations();
             }
         }
@@ -307,17 +309,17 @@ public class TrailTrackingService extends Service implements
         }
         public long getMapId(){ return TrailTrackingService.this.mapId;}
 
-        public void stopTracking(){
+        public void stopTracking() {
             isStarted = false;
             readableDatabase = databaseHelper.getReadableDatabase();
-            Cursor crsr = readableDatabase.query(TABLE_LOCATIONS, ALL_LOCATION_COLUMNS, COLUMN_MAP_ID + " = " + mapId,
-                    null, null, null, COLUMN_ID + " DESC");
+            Cursor crsr = readableDatabase.query(TABLE_LOCATIONS, ALL_LOCATION_COLUMNS, COLUMN_MAP_ID
+                    + " = " + mapId, null, null, null, COLUMN_ID + " DESC");
             crsr.moveToFirst();
             ContentValues values = new ContentValues();
-            values.put(COLUMN_AVERAGE_SPEED, totalDistance/(startTime-lastTime));//TODO units
+            values.put(COLUMN_AVERAGE_SPEED, totalDistance / (startTime - lastTime));
             values.put(COLUMN_END_TIME,lastTime);
-            values.put(COLUMN_TOTAL_DISTANCE,totalDistance);
-            values.put(COLUMN_MAXIMUM_SPEED,maxSpeed);
+            values.put(COLUMN_TOTAL_DISTANCE, totalDistance);
+            values.put(COLUMN_MAXIMUM_SPEED, maxSpeed);
             values.put(COLUMN_MAX_ALTITUDE, maxAltitude);
             values.put(COLUMN_MIN_ALTITUDE, minAltitude);
             values.put(COLUMN_START_ALTITUDE, startAltitude);

@@ -100,8 +100,9 @@ public class TrackTrailFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("TrackTrailFrag onCreateView()","called");
-        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_track_trail, container, false);
+        Log.d("TrackTrailFrag onCreateView()", "called");
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_track_trail,
+                container, false);
         mapFragment = MapFragment.newInstance();
         getActivity().getFragmentManager().beginTransaction()
             .add(R.id.mapFragmentWindow, mapFragment)
@@ -116,13 +117,14 @@ public class TrackTrailFragment extends Fragment implements
         }
 
         if (TrailTrackingService.getStarted()) {
-            MainActivity activity = (MainActivity)getActivity();
-            if(!activity.isBoundToLocationService()){
+            MainActivity activity = (MainActivity) getActivity();
+            if (!activity.isBoundToLocationService()) {
                 Log.d("TrackTrailFrag onCreateView()","binding to tracking Service");
                 activity.bindToLocationService();
             }
+
             if (sqLiteHelper == null) {
-                sqLiteHelper = ((MyApplication)getActivity().getApplication()).getDatabaseHelper();
+                sqLiteHelper = ((MyApplication) getActivity().getApplication()).getDatabaseHelper();
             } else {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 if (prefs.getBoolean(getString(R.string.key_show_stops), true)) {
@@ -146,7 +148,7 @@ public class TrackTrailFragment extends Fragment implements
         for (Marker marker : waypointMarkers) {
             marker.remove();
         }
-        for (Waypoint wp: waypoints) {
+        for (Waypoint wp : waypoints) {
             Log.d("TrackTrailFrag onCreateView()", "wp added");
             waypointMarkers.add(map.addMarker(wp.getMarker()));
         }
@@ -183,16 +185,17 @@ public class TrackTrailFragment extends Fragment implements
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setActionBarTracking(){
+    private void setActionBarTracking() {
         Log.d("TrackTrailFrag setActionBarTracking()", "called");
         actionMenu.findItem(R.id.action_start_tracking).setVisible(false);
         actionMenu.findItem(R.id.action_stop_tracking).setVisible(true);
-        if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA))
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             actionMenu.findItem(R.id.action_add_landmark).setVisible(true);
+        }
     }
 
-    private void setActionBarNotTracking(){
-        Log.d("TrackTrailFrag setActionBarNotTracking()","called");
+    private void setActionBarNotTracking() {
+        Log.d("TrackTrailFrag setActionBarNotTracking()", "called");
         actionMenu.findItem(R.id.action_start_tracking).setVisible(true);
         actionMenu.findItem(R.id.action_stop_tracking).setVisible(false);
         actionMenu.findItem(R.id.action_add_landmark).setVisible(false);
@@ -213,7 +216,7 @@ public class TrackTrailFragment extends Fragment implements
                 mainActivity.bindToLocationService();
 
                 Log.d("TrackTrailFragment onOptionsItemSelected()", "binding to dbService");
-                if(sqLiteHelper == null){
+                if (sqLiteHelper == null) {
                     sqLiteHelper = ((MyApplication) getActivity().getApplication()).getDatabaseHelper();
                 }
                 break;
@@ -226,7 +229,7 @@ public class TrackTrailFragment extends Fragment implements
                 detailsDialogFragment.show(getFragmentManager(), "editingMapDetails");
                 //cleanup done on callbacks
                 break;
-            case R.id.action_add_landmark:
+            case R.id.action_add_landmark :
                 Intent wpIntent = new Intent(mainActivity, WaypointActivity.class);
                 wpIntent.putExtra(WaypointActivity.KEY_MAP_ID, mainActivity.binder.getMapId());
                 wpIntent.putExtra(WaypointActivity.KEY_LOCATION_ID, lastLocationId);
@@ -237,7 +240,7 @@ public class TrackTrailFragment extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
 
-    public void onLocationServiceBound(){
+    public void onLocationServiceBound() {
         if (((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
                 .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             if (!TrailTrackingService.getStarted()) {
@@ -407,7 +410,7 @@ public class TrackTrailFragment extends Fragment implements
 
     @Override
     public void onCancel() {
-        ((MainActivity)getActivity()).binder.resumeTracking();
+        ((MainActivity) getActivity()).binder.resumeTracking();
         dashboardFragment.resumeTimer();
     }
 

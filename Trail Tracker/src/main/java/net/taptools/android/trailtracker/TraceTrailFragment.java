@@ -14,7 +14,8 @@ import net.taptools.android.trailtracker.models.Map;
 import net.taptools.android.trailtracker.dialogs.EnableLocationDialogFragment;
 
 
-public class TraceTrailFragment extends Fragment implements MapPickerFragment.MapPickListener, EnableLocationDialogFragment.OnGPSCancelListener {
+public class TraceTrailFragment extends Fragment implements MapPickerFragment.MapPickListener,
+        EnableLocationDialogFragment.OnGPSCancelListener {
 
     static final String KEY_IS_SELECTING = "isSelecting";
     static final String KEY_MAP_ID = "mapid";
@@ -37,8 +38,8 @@ public class TraceTrailFragment extends Fragment implements MapPickerFragment.Ma
         tracingFragment.onLocationChanged(loc);
     }
 
-    public void onLocationServiceBound(){
-        if(getActivity()!=null) {
+    public void onLocationServiceBound() {
+        if(getActivity() != null) {
             ((MainActivity) getActivity()).binder.startServingLocations((MainActivity) getActivity());
             if (!((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
                     .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -59,20 +60,20 @@ public class TraceTrailFragment extends Fragment implements MapPickerFragment.Ma
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("TraceTrailFragment#onCreateView()", "called");
-        if(root!=null){
+        if (root != null) {
             Log.d("TraceTrailFragment#onCreateView()", "returned old view");
-            if(isTracing()){
-                MainActivity activity = (MainActivity)getActivity();
+            if (isTracing()) {
+                MainActivity activity = (MainActivity) getActivity();
                 activity.bindToLocationService();
             }
             return root;
         }
-        root = inflater.inflate(R.layout.fragment_tracing_main,container,false);
-        if(pickerFragment== null){
+        root = inflater.inflate(R.layout.fragment_tracing_main, container, false);
+        if (pickerFragment == null) {
             pickerFragment = MapPickerFragment.newInstance(this);
-            Log.d("TraceTrailFragmnet#onCreateView()","new pickerFragment");
+            Log.d("TraceTrailFragmnet#onCreateView()", "new pickerFragment");
         }
-        if(!pickerFragment.isAdded()) {
+        if (!pickerFragment.isAdded()) {
             Log.d("TraceTrailFragment#onCreateView()", "picker Fragment added");
             getFragmentManager().beginTransaction()
                     .add(R.id.traceTrailFrame, pickerFragment)
@@ -84,40 +85,40 @@ public class TraceTrailFragment extends Fragment implements MapPickerFragment.Ma
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        MainActivity activity=(MainActivity)getActivity();
-        if(activity.binder!=null) {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity.binder != null) {
             activity.binder.stopServingLocations();
             Log.d("ActiveTracingFragment#onStop()", "Locations stopped");
         }
-        ((MainActivity)getActivity()).unbindFromLocationService();
+        ((MainActivity) getActivity()).unbindFromLocationService();
     }
 
     @Override
     public void onMapSelected(int mapId) {
         this.mapId = mapId;
-        Map mapData = Map.instanceOf(((MyApplication)getActivity().getApplication())
-                .getDatabaseHelper(),mapId);
+        Map mapData = Map.instanceOf(((MyApplication) getActivity().getApplication())
+                .getDatabaseHelper(), mapId);
         tracingFragment = ActiveTracingFragment.newInstance(mapData);
         getFragmentManager().beginTransaction()
-                .replace(R.id.traceTrailFrame,tracingFragment)
+                .replace(R.id.traceTrailFrame, tracingFragment)
                 .commit();
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         pickerFragment = MapPickerFragment.newInstance(this);
         getFragmentManager().beginTransaction()
-                .replace(R.id.traceTrailFrame,pickerFragment)
+                .replace(R.id.traceTrailFrame, pickerFragment)
                 .commit();
-        MainActivity activity = (MainActivity)getActivity();
-        if(activity.binder!=null) {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity.binder != null) {
             activity.binder.stopServingLocations();
             activity.unbindFromLocationService();
         }
     }
 
     public boolean isTracing() {
-        boolean added= false;
-        if(tracingFragment!= null){
+        boolean added = false;
+        if (tracingFragment != null) {
             added = tracingFragment.isAdded();
         }
         return added;
